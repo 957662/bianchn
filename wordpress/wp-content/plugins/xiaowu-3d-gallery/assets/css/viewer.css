@@ -1,0 +1,351 @@
+/**
+ * 小伍3D图库 - 查看器样式
+ */
+
+/* 查看器容器 */
+.xiaowu-3d-viewer-container {
+    position: relative;
+    width: 100%;
+    background: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 查看器主体 */
+.xiaowu-3d-viewer {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+}
+
+.xiaowu-3d-viewer canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    outline: none;
+}
+
+/* 控制按钮 */
+.xiaowu-3d-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.xiaowu-3d-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.xiaowu-3d-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.xiaowu-3d-btn:active {
+    transform: scale(0.95);
+}
+
+.xiaowu-3d-btn .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #333;
+}
+
+.xiaowu-3d-btn.active {
+    background: #667eea;
+}
+
+.xiaowu-3d-btn.active .dashicons {
+    color: #fff;
+}
+
+/* 模型信息 */
+.xiaowu-3d-info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px 20px;
+    border-radius: 8px;
+    max-width: 300px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.xiaowu-3d-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.xiaowu-3d-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* 加载动画 */
+.xiaowu-3d-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+}
+
+.xiaowu-3d-loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.xiaowu-3d-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: xiaowu-spin 1s linear infinite;
+}
+
+@keyframes xiaowu-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.xiaowu-3d-loading p {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* 错误信息 */
+.xiaowu-3d-error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 400px;
+    z-index: 50;
+}
+
+.xiaowu-3d-error-message.show {
+    display: block;
+}
+
+.xiaowu-3d-error-message h3 {
+    margin: 0 0 10px 0;
+    color: #e74c3c;
+    font-size: 18px;
+}
+
+.xiaowu-3d-error-message p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* 图库网格 */
+.xiaowu-3d-gallery {
+    display: grid;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.xiaowu-3d-gallery.xiaowu-3d-col-2 {
+    grid-template-columns: repeat(auto-fill, minmax(calc(50% - 10px), 1fr));
+}
+
+.xiaowu-3d-gallery.xiaowu-3d-col-3 {
+    grid-template-columns: repeat(auto-fill, minmax(calc(33.333% - 14px), 1fr));
+}
+
+.xiaowu-3d-gallery.xiaowu-3d-col-4 {
+    grid-template-columns: repeat(auto-fill, minmax(calc(25% - 15px), 1fr));
+}
+
+/* 图库项 */
+.xiaowu-3d-gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.xiaowu-3d-gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.xiaowu-3d-gallery-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.xiaowu-3d-gallery-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.xiaowu-3d-placeholder {
+    width: 100%;
+    height: 250px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.xiaowu-3d-placeholder .dashicons {
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* 图库覆盖层 */
+.xiaowu-3d-gallery-overlay {
+    padding: 15px;
+    background: #fff;
+}
+
+.xiaowu-3d-gallery-overlay h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.xiaowu-3d-gallery-overlay p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* 图库元信息 */
+.xiaowu-3d-gallery-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 13px;
+    color: #999;
+}
+
+.xiaowu-3d-views {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.xiaowu-3d-views .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .xiaowu-3d-gallery.xiaowu-3d-col-3,
+    .xiaowu-3d-gallery.xiaowu-3d-col-4 {
+        grid-template-columns: repeat(auto-fill, minmax(calc(50% - 10px), 1fr));
+    }
+
+    .xiaowu-3d-info {
+        max-width: 200px;
+        padding: 10px 15px;
+    }
+
+    .xiaowu-3d-info h3 {
+        font-size: 16px;
+    }
+
+    .xiaowu-3d-info p {
+        font-size: 12px;
+    }
+
+    .xiaowu-3d-controls {
+        bottom: 10px;
+        right: 10px;
+        gap: 8px;
+    }
+
+    .xiaowu-3d-btn {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .xiaowu-3d-gallery.xiaowu-3d-col-2,
+    .xiaowu-3d-gallery.xiaowu-3d-col-3,
+    .xiaowu-3d-gallery.xiaowu-3d-col-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .xiaowu-3d-info {
+        position: static;
+        margin: 10px;
+        max-width: none;
+    }
+}
+
+/* 全屏模式 */
+.xiaowu-3d-viewer-container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999;
+    border-radius: 0;
+}
+
+.xiaowu-3d-viewer-container.fullscreen .xiaowu-3d-info {
+    display: none;
+}
+
+/* 错误状态 */
+.xiaowu-3d-error {
+    padding: 20px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    color: #856404;
+    text-align: center;
+}

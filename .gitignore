@@ -1,0 +1,15 @@
+.env
+.DS_Store
+node_modules/
+vendor/
+wp-content/uploads/*
+!wp-content/uploads/.gitkeep
+*.log
+*.sql
+*.tar.gz
+*.zip
+.idea/
+.vscode/
+.phpunit.result.cache
+composer.lock
+package-lock.json

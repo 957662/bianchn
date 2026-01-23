@@ -1,0 +1,344 @@
+/**
+ * 小伍用户系统 - 管理后台样式
+ */
+
+.xiaowu-user-admin {
+    padding: 20px;
+}
+
+.xiaowu-user-admin h1 {
+    margin-bottom: 20px;
+}
+
+/* 标签页样式 */
+.xiaowu-tabs {
+    margin-top: 20px;
+}
+
+.xiaowu-tabs .nav-tab-wrapper {
+    margin-bottom: 0;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.xiaowu-tabs .tab-content {
+    display: none;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-top: none;
+}
+
+.xiaowu-tabs .tab-content.active {
+    display: block;
+}
+
+/* 统计卡片 */
+.xiaowu-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.xiaowu-stat-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.xiaowu-stat-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.xiaowu-stat-card .stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2271b1;
+}
+
+.xiaowu-stat-card .stat-label {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+/* 数据表格 */
+.xiaowu-data-table {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.xiaowu-data-table th {
+    background: #f6f7f7;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.xiaowu-data-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.xiaowu-data-table tr:hover {
+    background: #f6f7f7;
+}
+
+/* 用户头像 */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+/* 等级徽章 */
+.level-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: #2271b1;
+}
+
+.level-badge.level-1 { background: #95a5a6; }
+.level-badge.level-2 { background: #3498db; }
+.level-badge.level-3 { background: #9b59b6; }
+.level-badge.level-4 { background: #e67e22; }
+.level-badge.level-5 { background: #e74c3c; }
+
+/* 进度条 */
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #f0f0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2271b1, #135e96);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* 操作按钮 */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.action-buttons .button {
+    padding: 4px 10px;
+    font-size: 12px;
+    height: auto;
+    line-height: 1.5;
+}
+
+/* 筛选器 */
+.xiaowu-filters {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.xiaowu-filters label {
+    margin-right: 5px;
+    font-weight: 600;
+}
+
+.xiaowu-filters select,
+.xiaowu-filters input[type="text"],
+.xiaowu-filters input[type="date"] {
+    padding: 5px 10px;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+}
+
+/* 通知消息 */
+.xiaowu-notice {
+    padding: 12px 15px;
+    border-left: 4px solid;
+    border-radius: 3px;
+    margin: 15px 0;
+}
+
+.xiaowu-notice.success {
+    background: #d5f4e6;
+    border-color: #00a32a;
+    color: #00612a;
+}
+
+.xiaowu-notice.error {
+    background: #f8d7da;
+    border-color: #d63638;
+    color: #9b2124;
+}
+
+.xiaowu-notice.warning {
+    background: #fcf4dd;
+    border-color: #f0b400;
+    color: #835b00;
+}
+
+/* 加载动画 */
+.xiaowu-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2271b1;
+    border-radius: 50%;
+    animation: xiaowu-spin 1s linear infinite;
+}
+
+@keyframes xiaowu-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 空状态 */
+.xiaowu-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.xiaowu-empty-state .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.xiaowu-empty-state h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 782px) {
+    .xiaowu-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xiaowu-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+
+/* 设置页面特殊样式 */
+.xiaowu-user-settings .form-table th {
+    width: 200px;
+}
+
+.xiaowu-user-settings .description {
+    margin-top: 5px;
+    color: #666;
+}
+
+.xiaowu-user-settings input[type="text"].regular-text {
+    width: 400px;
+}
+
+/* 图表容器 */
+.xiaowu-chart-container {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.xiaowu-chart-container h3 {
+    margin-top: 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+/* 用户资料卡片 */
+.xiaowu-user-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+}
+
+.xiaowu-user-card .user-avatar {
+    width: 60px;
+    height: 60px;
+}
+
+.xiaowu-user-card .user-info h4 {
+    margin: 0 0 5px 0;
+}
+
+.xiaowu-user-card .user-info .user-meta {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 徽章列表 */
+.xiaowu-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.xiaowu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: #f0f0f1;
+    border: 1px solid #ccd0d4;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.xiaowu-badge .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    color: #f0b400;
+}

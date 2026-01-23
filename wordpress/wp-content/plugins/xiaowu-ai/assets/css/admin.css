@@ -1,0 +1,284 @@
+/* 小伍AI插件管理后台样式 */
+
+.xiaowu-ai-admin {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.xiaowu-ai-admin h1 {
+    color: #2271b1;
+    margin-bottom: 20px;
+}
+
+/* 按钮样式 */
+.xiaowu-ai-button {
+    background: #2271b1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.xiaowu-ai-button:hover {
+    background: #135e96;
+}
+
+.xiaowu-ai-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* 加载动画 */
+.xiaowu-ai-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: xiaowu-spin 1s linear infinite;
+}
+
+@keyframes xiaowu-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 通知样式 */
+.xiaowu-ai-notice {
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-left: 4px solid;
+    border-radius: 4px;
+}
+
+.xiaowu-ai-notice.success {
+    background: #ecf7ed;
+    border-color: #46b450;
+    color: #2d5c2f;
+}
+
+.xiaowu-ai-notice.error {
+    background: #f9e9e9;
+    border-color: #dc3232;
+    color: #7c2121;
+}
+
+.xiaowu-ai-notice.info {
+    background: #e5f5fa;
+    border-color: #00a0d2;
+    color: #005a7c;
+}
+
+.xiaowu-ai-notice.warning {
+    background: #fff8e5;
+    border-color: #ffb900;
+    color: #7c5c00;
+}
+
+/* 表单样式 */
+.xiaowu-ai-form-group {
+    margin-bottom: 20px;
+}
+
+.xiaowu-ai-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.xiaowu-ai-form-group input[type="text"],
+.xiaowu-ai-form-group input[type="password"],
+.xiaowu-ai-form-group input[type="number"],
+.xiaowu-ai-form-group textarea,
+.xiaowu-ai-form-group select {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.xiaowu-ai-form-group textarea {
+    min-height: 100px;
+    font-family: monospace;
+}
+
+.xiaowu-ai-form-group .description {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #646970;
+}
+
+/* 卡片样式 */
+.xiaowu-ai-card {
+    background: white;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.xiaowu-ai-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.xiaowu-ai-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.xiaowu-ai-card-body {
+    line-height: 1.6;
+}
+
+/* 网格布局 */
+.xiaowu-ai-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.xiaowu-ai-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.xiaowu-ai-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.xiaowu-ai-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 782px) {
+    .xiaowu-ai-grid-2,
+    .xiaowu-ai-grid-3,
+    .xiaowu-ai-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 标签页 */
+.xiaowu-ai-tabs {
+    margin-bottom: 20px;
+}
+
+.xiaowu-ai-tabs-nav {
+    display: flex;
+    border-bottom: 2px solid #c3c4c7;
+    margin-bottom: 20px;
+}
+
+.xiaowu-ai-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #50575e;
+    transition: all 0.3s;
+}
+
+.xiaowu-ai-tab:hover {
+    color: #2271b1;
+}
+
+.xiaowu-ai-tab.active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+    font-weight: 600;
+}
+
+.xiaowu-ai-tab-content {
+    display: none;
+}
+
+.xiaowu-ai-tab-content.active {
+    display: block;
+}
+
+/* 代码块 */
+.xiaowu-ai-code {
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* 徽章 */
+.xiaowu-ai-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.xiaowu-ai-badge.primary {
+    background: #2271b1;
+    color: white;
+}
+
+.xiaowu-ai-badge.success {
+    background: #46b450;
+    color: white;
+}
+
+.xiaowu-ai-badge.error {
+    background: #dc3232;
+    color: white;
+}
+
+.xiaowu-ai-badge.warning {
+    background: #ffb900;
+    color: #1d2327;
+}
+
+/* 进度条 */
+.xiaowu-ai-progress {
+    width: 100%;
+    height: 20px;
+    background: #f0f0f1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.xiaowu-ai-progress-bar {
+    height: 100%;
+    background: #2271b1;
+    transition: width 0.3s;
+}
+
+/* 空状态 */
+.xiaowu-ai-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #646970;
+}
+
+.xiaowu-ai-empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.xiaowu-ai-empty-state-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
