@@ -264,13 +264,17 @@ fi
 # 检查配置文件
 echo ""
 echo "17. 检查配置文件..."
-if [ ! -f ".env" ]; then
+
+# 先保存当前目录（admin-panel），检查上级目录的 .env
+PARENT_DIR=$(dirname "$(pwd)")
+if [ ! -f "$PARENT_DIR/.env" ]; then
   echo -e "${YELLOW}.env 文件不存在，请通过部署向导配置${NC}"
 fi
 
-if [ ! -f "admin-panel/.env" ]; then
+# 检查当前目录（admin-panel）的 .env
+if [ ! -f ".env" ]; then
   echo -e "${YELLOW}admin-panel/.env 文件不存在，正在创建...${NC}"
-  cat > admin-panel/.env << 'EOF'
+  cat > .env << 'EOF'
 VITE_API_URL=http://localhost:8080/wp-json/xiaowu/v1
 VITE_APP_TITLE=小伍博客
 EOF
