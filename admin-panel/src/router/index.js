@@ -13,6 +13,12 @@ const routes = [
     meta: { title: '登录', requiresAuth: false }
   },
   {
+    path: '/setup',
+    name: 'SetupWizard',
+    component: () => import('@/views/SetupWizard.vue'),
+    meta: { title: '部署配置向导', requiresAuth: false }
+  },
+  {
     path: '/',
     component: () => import('@/views/Layout.vue'),
     redirect: '/dashboard',

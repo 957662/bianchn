@@ -25,3 +25,15 @@ app.use(ElementPlus, {
 })
 
 app.mount('#app')
+
+// 检查是否是首次部署，自动跳转到部署向导
+if (!localStorage.getItem('xiaowu_first_deploy')) {
+  // 检查是否已完成WordPress安装
+  const wpInstalled = localStorage.getItem('xiaowu_wp_installed')
+  if (!wpInstalled) {
+    // 检查当前URL是否包含setup参数，避免循环
+    if (!window.location.search.includes('skip-wizard')) {
+      window.location.href = '/setup'
+    }
+  }
+}

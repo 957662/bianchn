@@ -382,6 +382,49 @@ export const settingsAPI = {
   }
 }
 
+// 部署向导API
+export const deploymentAPI = {
+  // 检查环境
+  checkEnvironment() {
+    return apiClient.get('/xiaowu/v1/deployment/environment')
+  },
+
+  // 测试数据库连接
+  testDB(config) {
+    return apiClient.post('/xiaowu/v1/deployment/test-db', config)
+  },
+
+  // 测试AI连接
+  testAI(config) {
+    return apiClient.post('/xiaowu/v1/deployment/test-ai', config)
+  },
+
+  // 测试邮件发送
+  testEmail(config) {
+    return apiClient.post('/xiaowu/v1/deployment/test-email', config)
+  },
+
+  // 保存配置
+  saveConfig(type, data) {
+    return apiClient.post(`/xiaowu/v1/deployment/save/${type}`, data)
+  },
+
+  // 生成配置文件
+  generateConfig(data) {
+    return apiClient.post('/xiaowu/v1/deployment/generate', data)
+  },
+
+  // 应用配置
+  applyConfig() {
+    return apiClient.post('/xiaowu/v1/deployment/apply')
+  },
+
+  // 标记部署完成
+  markCompleted() {
+    return apiClient.post('/xiaowu/v1/deployment/complete')
+  }
+}
+
 export default {
   auth: authAPI,
   posts: postsAPI,
@@ -392,5 +435,6 @@ export default {
   ai: aiAPI,
   stats: statsAPI,
   media: mediaAPI,
-  settings: settingsAPI
+  settings: settingsAPI,
+  deployment: deploymentAPI
 }
