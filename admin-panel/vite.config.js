@@ -11,6 +11,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    allowedHosts: ['.monkeycode-ai.online'],
     proxy: {
       '/wp-json': {
         target: 'http://localhost:8080',

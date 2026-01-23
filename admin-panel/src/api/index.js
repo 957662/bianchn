@@ -56,6 +56,21 @@ export const postsAPI = {
       post_id: postId,
       content
     })
+  },
+
+  // 获取分类列表
+  getCategories() {
+    return apiClient.get('/wp/v2/categories')
+  },
+
+  // 获取标签列表
+  getTags() {
+    return apiClient.get('/wp/v2/tags')
+  },
+
+  // 获取作者列表
+  getAuthors() {
+    return apiClient.get('/wp/v2/users?who=authors')
   }
 }
 
@@ -66,11 +81,19 @@ export const commentsAPI = {
     return apiClient.get('/xiaowu-comments/v1/comments', { params })
   },
 
+  // 获取评论统计
+  getStats() {
+    return apiClient.get('/xiaowu-comments/v1/stats')
+  },
+
+  // AI检测垃圾评论
+  analyzeSpam(id) {
+    return apiClient.post(`/xiaowu-comments/v1/comments/${id}/analyze-spam`)
+  },
+
   // 审核评论
-  moderateComment(id, status) {
-    return apiClient.put(`/xiaowu-comments/v1/comments/${id}/moderate`, {
-      status
-    })
+  updateComment(id, data) {
+    return apiClient.put(`/xiaowu-comments/v1/comments/${id}`, data)
   },
 
   // 删除评论
@@ -134,6 +157,11 @@ export const galleryAPI = {
     return apiClient.get(`/xiaowu-3d-gallery/v1/models/${id}`)
   },
 
+  // 获取分类
+  getCategories() {
+    return apiClient.get('/xiaowu-3d-gallery/v1/categories')
+  },
+
   // 上传模型
   uploadModel(formData) {
     return apiClient.post('/xiaowu-3d-gallery/v1/models/upload', formData, {
@@ -175,6 +203,13 @@ export const searchAPI = {
     })
   },
 
+  // 获取最近搜索
+  getRecentSearches(limit = 20) {
+    return apiClient.get('/xiaowu-search/v1/recent', {
+      params: { limit }
+    })
+  },
+
   // 重建索引
   rebuildIndex(type = 'all') {
     return apiClient.post('/xiaowu-search/v1/index/rebuild', { type })
@@ -183,6 +218,11 @@ export const searchAPI = {
   // 优化索引
   optimizeIndex() {
     return apiClient.post('/xiaowu-search/v1/index/optimize')
+  },
+
+  // 保存配置
+  saveConfig(data) {
+    return apiClient.post('/xiaowu-search/v1/settings', data)
   }
 }
 
@@ -211,6 +251,14 @@ export const aiAPI = {
     return apiClient.post('/xiaowu-ai/v1/generate-outline', { topic })
   },
 
+  // 优化文章内容
+  optimizeContent(postId, content) {
+    return apiClient.post('/xiaowu-ai/v1/optimize-article', {
+      post_id: postId,
+      content
+    })
+  },
+
   // 生成图片
   generateImage(prompt, options = {}) {
     return apiClient.post('/xiaowu-ai/v1/generate-image', {
@@ -222,6 +270,25 @@ export const aiAPI = {
   // 智能推荐
   getRecommendations(postId) {
     return apiClient.get(`/xiaowu-ai/v1/recommendations/${postId}`)
+  },
+
+  // 获取使用统计
+  getUsage() {
+    return apiClient.get('/xiaowu-ai/v1/usage')
+  },
+
+  // 获取使用趋势
+  getUsageTrend(days = 7) {
+    return apiClient.get('/xiaowu-ai/v1/usage/trend', {
+      params: { days }
+    })
+  },
+
+  // 获取任务列表
+  getTasks(limit = 20) {
+    return apiClient.get('/xiaowu-ai/v1/tasks', {
+      params: { limit }
+    })
   }
 }
 
@@ -267,6 +334,54 @@ export const mediaAPI = {
   }
 }
 
+// 系统设置API
+export const settingsAPI = {
+  // 获取设置
+  getSettings() {
+    return apiClient.get('/xiaowu/v1/settings')
+  },
+
+  // 保存基本设置
+  saveBasic(data) {
+    return apiClient.post('/xiaowu/v1/settings/basic', data)
+  },
+
+  // 保存评论设置
+  saveComments(data) {
+    return apiClient.post('/xiaowu/v1/settings/comments', data)
+  },
+
+  // 保存媒体设置
+  saveMedia(data) {
+    return apiClient.post('/xiaowu/v1/settings/media', data)
+  },
+
+  // 保存性能设置
+  savePerformance(data) {
+    return apiClient.post('/xiaowu/v1/settings/performance', data)
+  },
+
+  // 保存安全设置
+  saveSecurity(data) {
+    return apiClient.post('/xiaowu/v1/settings/security', data)
+  },
+
+  // 保存邮件设置
+  saveEmail(data) {
+    return apiClient.post('/xiaowu/v1/settings/email', data)
+  },
+
+  // 清除缓存
+  clearCache() {
+    return apiClient.post('/xiaowu/v1/settings/cache/clear')
+  },
+
+  // 发送测试邮件
+  sendTestEmail(email) {
+    return apiClient.post('/xiaowu/v1/settings/email/test', { email })
+  }
+}
+
 export default {
   auth: authAPI,
   posts: postsAPI,
@@ -276,5 +391,6 @@ export default {
   search: searchAPI,
   ai: aiAPI,
   stats: statsAPI,
-  media: mediaAPI
+  media: mediaAPI,
+  settings: settingsAPI
 }
