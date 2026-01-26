@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <img src="/assets/images/logo.svg" alt="Logo" class="login-logo" />
+        <img src="@/assets/images/logo.svg" alt="Logo" class="login-logo" />
         <h1 class="login-title">小伍博客</h1>
         <p class="login-subtitle">后台管理系统</p>
       </div>

@@ -4,7 +4,7 @@
       <!-- 侧边栏 -->
       <el-aside :width="sidebarWidth" class="layout-aside">
         <div class="logo-container">
-          <img v-if="!appStore.sidebarCollapsed" src="/logo.svg" alt="Logo" class="logo" />
+          <img v-if="!appStore.sidebarCollapsed" src="@/assets/images/logo.svg" alt="Logo" class="logo" />
           <span v-if="!appStore.sidebarCollapsed" class="logo-text">小伍博客</span>
         </div>
 
