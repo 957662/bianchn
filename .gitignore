@@ -1,15 +1,16 @@
-.env
-.DS_Store
+# ===== Runtime / Docker data =====
+mysql/data/
+redis/data/
+redis/dump.rdb
+
+# ===== Node =====
 node_modules/
-vendor/
-wp-content/uploads/*
-!wp-content/uploads/.gitkeep
+
+# ===== Env =====
+.env
+
+# ===== Logs =====
 *.log
-*.sql
-*.tar.gz
-*.zip
-.idea/
-.vscode/
-.phpunit.result.cache
-composer.lock
-package-lock.json
+
+# ===== OS =====
+.DS_Store

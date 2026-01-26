@@ -1,0 +1,21 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 运行 lint-staged，验证暂存文件
+npx lint-staged
+
+# 检查提交是否出错
+if [ $? -ne 0 ]; then
+  echo "❌ 代码检查失败，请修复错误后重试"
+  exit 1
+fi
+
+# 运行 Commitlint 检查提交信息
+npx commitlint --edit "$1"
+
+if [ $? -ne 0 ]; then
+  echo "❌ 提交信息不符合规范，请按照约定修改"
+  exit 1
+fi
+
+echo "✅ 所有检查通过！提交即将进行..."

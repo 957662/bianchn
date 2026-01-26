@@ -1,0 +1,7 @@
+{
+  "*.{js,vue}": "eslint --fix",
+  "*.{js,vue,css,html,md,json}": "prettier --write",
+  "*.php": [
+    "php -l"
+  ]
+}

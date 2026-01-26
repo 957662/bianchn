@@ -1,0 +1,39 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 运行 ESLint 检查 JavaScript 和 Vue 文件
+echo "🔍 运行 ESLint 检查..."
+npx eslint --fix . --ext .js,.vue
+
+if [ $? -ne 0 ]; then
+  echo "⚠️  ESLint 检查存在问题，尝试自动修复..."
+  exit 1
+fi
+
+# 运行 Prettier 格式化代码
+echo "🎨 运行 Prettier 格式化..."
+npx prettier --write .
+
+if [ $? -ne 0 ]; then
+  echo "⚠️  Prettier 格式化出错"
+  exit 1
+fi
+
+# 检查 PHP 文件语法（如果系统安装了 PHP）
+if command -v php &> /dev/null; then
+  echo "🐘 检查 PHP 文件语法..."
+  for file in $(git diff --cached --name-only | grep '\.php$'); do
+    if [ -f "$file" ]; then
+      php -l "$file" > /dev/null
+      if [ $? -ne 0 ]; then
+        echo "❌ PHP 文件 $file 存在语法错误"
+        exit 1
+      fi
+    fi
+  done
+fi
+
+echo "✅ 所有代码检查和格式化完成！"
+
+# 添加格式化后的文件到暂存区
+git add .
