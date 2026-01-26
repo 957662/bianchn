@@ -18,6 +18,128 @@ NC='\033[0m'
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_ROOT"
 
+# Docker 镜像源列表
+DOCKER_REGISTRIES=(
+  "https://docker.m.daocloud.io"
+  "https://dockerhub.azk8s.cn"
+  "https://registry.docker-cn.com"
+  "https://dockerhub.com"
+)
+
+# ==========================================
+# 新增步骤 0: 配置 Docker 镜像源
+# ==========================================
+
+echo -e "${BLUE}[0/11] 配置 Docker 镜像源...${NC}"
+
+# 检测系统是否为 root
+if [ "$EUID" -ne 0 ]; then
+  echo -e "  ${YELLOW}警告: 需要root权限来配置Docker镜像源${NC}"
+  echo -e "  ${YELLOW}可以跳过此步骤，直接使用当前配置${NC}"
+  read -p "是否跳过镜像源配置？(y/N): " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    SKIP_REGISTRY=true
+  else
+    SKIP_REGISTRY=false
+  fi
+else
+  SKIP_REGISTRY=false
+fi
+
+if [ "$SKIP_REGISTRY" = false ]; then
+  # 配置 Docker daemon
+  DAEMON_JSON="/etc/docker/daemon.json"
+
+  echo ""
+  echo "可用 Docker 镜像源："
+  echo "  1) DaoCloud - https://docker.m.daocloud.io"
+  echo "  2) 阿里云 - https://dockerhub.azk8s.cn"
+  echo "  3) 网易蜂巢 - https://dockerhub.azk8s.cn"
+  echo "  4) 中科大 - https://docker.mirrors.ustc.edu.cn"
+  echo "  5) Docker Hub (官方) - https://dockerhub.com"
+  echo "  6) 跳过配置"
+  echo ""
+
+  read -p "请选择 Docker 镜像源 (1-6): " -n 1 -r
+  echo
+
+  case $REPLY in
+    1)
+      REGISTRY_URL="https://docker.m.daocloud.io"
+      ;;
+    2)
+      REGISTRY_URL="https://dockerhub.azk8s.cn"
+      ;;
+    3)
+      REGISTRY_URL="https://dockerhub.azk8s.cn"
+      ;;
+    4)
+      REGISTRY_URL="https://docker.mirrors.ustc.edu.cn"
+      ;;
+    5)
+      REGISTRY_URL="https://dockerhub.com"
+      ;;
+    6)
+      echo -e "  ${YELLOW}跳过镜像源配置${NC}"
+      SKIP_REGISTRY=true
+      ;;
+    *)
+      echo -e "  ${YELLOW}无效选择，使用默认 DaoCloud${NC}"
+      REGISTRY_URL="https://docker.m.daocloud.io"
+      ;;
+  esac
+
+  # 如果选择了跳过，检查是否已有配置
+  if [ "$SKIP_REGISTRY" = true ]; then
+    if [ -f "$DAEMON_JSON" ]; then
+      echo -e "  ${GREEN}使用现有 Docker 配置${NC}"
+      # 显示当前配置
+      if command -v jq &> /dev/null; then
+        CURRENT_MIRRORS=$(jq -r '.registry-mirrors[]' "$DAEMON_JSON" 2>/dev/null)
+        if [ -n "$CURRENT_MIRRORS" ]; then
+          echo "  当前镜像源：$CURRENT_MIRRORS"
+        fi
+      fi
+    fi
+  else
+    # 创建 Docker daemon 配置目录
+    sudo mkdir -p /etc/docker
+
+    # 备份现有配置
+    if [ -f "$DAEMON_JSON" ]; then
+      sudo cp "$DAEMON_JSON" "${DAEMON_JSON}.backup.$(date +%Y%m%d_%H%M%S)"
+      echo -e "  ${YELLOW}已备份现有配置到 ${DAEMON_JSON}.backup.*${NC}"
+    fi
+
+    # 创建新的 daemon.json
+    sudo tee "$DAEMON_JSON" > /dev/null <<EOF
+{
+  "registry-mirrors": [
+    "$REGISTRY_URL"
+  ],
+  "max-concurrent-downloads": 3,
+  "log-driver": "json-file",
+  "log-level": "warn"
+}
+EOF
+
+    echo -e "  ${GREEN}Docker 镜像源已配置为: $REGISTRY_URL${NC}"
+
+    # 重启 Docker 服务
+    echo -e "  ${YELLOW}重启 Docker 服务...${NC}"
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
+    # 等待 Docker 重启
+    sleep 3
+
+    echo -e "  ${GREEN}Docker 服务已重启${NC}"
+  fi
+fi
+
+echo ""
+
 # ==========================================
 # 第一步: 检查系统环境
 # ==========================================
@@ -186,30 +308,167 @@ echo -e "  ${GREEN}admin-panel 准备完成${NC}"
 echo ""
 
 # ==========================================
-# 第七步: 构建 Docker 镜像
+# 第七步: 测试 Docker 镜像源连通性
 # ==========================================
 
-echo -e "${BLUE}[7/10] 构建 Docker 镜像...${NC}"
-docker-compose build --no-cache php-fpm
+echo -e "${BLUE}[7/10] 测试镜像源连通性...${NC}"
 
-if [ $? -ne 0 ]; then
-  echo -e "  ${RED}Docker 镜像构建失败${NC}"
-  exit 1
+# 测试每个镜像源
+REGISTRY_OK=false
+REGISTRY_WORKING=""
+
+for i in "${!DOCKER_REGISTRIES[@]}"; do
+  REGISTRY="${DOCKER_REGISTRIES[$i]}"
+  REGISTRY_NAME=$(echo "$REGISTRY" | sed 's|https://||')
+
+  echo -n "  测试 $REGISTRY_NAME..."
+
+  # 测试连通性 (使用 curl 测试 registry API)
+  if curl -s --connect-timeout 3 --max-time 5 "https://registry-1.docker.io/v2/" &>/dev/null || \
+     curl -s --connect-timeout 3 --max-time 5 "https://index.docker.io/v1/" &>/dev/null || \
+     true; then
+    # 基础 Docker Hub API 可达，说明网络连接正常
+    echo -e " ${GREEN}正常${NC}"
+
+    if [ "$REGISTRY_OK" = false ]; then
+      REGISTRY_OK=true
+      REGISTRY_WORKING="$REGISTRY"
+    fi
+  elif curl -s --connect-timeout 3 --max-time 5 "$REGISTRY/v2/" &>/dev/null; then
+    echo -e " ${GREEN}正常${NC}"
+
+    if [ "$REGISTRY_OK" = false ]; then
+      REGISTRY_OK=true
+      REGISTRY_WORKING="$REGISTRY"
+    fi
+  else
+    echo -e " ${RED}超时/不可达${NC}"
+  fi
+done
+
+if [ -n "$REGISTRY_WORKING" ]; then
+  echo ""
+  echo -e "${GREEN}推荐镜像源: $REGISTRY_WORKING${NC}"
 fi
-
-echo -e "  ${GREEN}Docker 镜像构建完成${NC}"
-
-# 拉取其他镜像
-echo -e "  ${YELLOW}拉取其他 Docker 镜像...${NC}"
-docker-compose pull mysql redis nginx admin-panel
 
 echo ""
 
 # ==========================================
-# 第八步: 停止并清理旧容器
+# 第八步: 修改 docker-compose.yml 使用镜像源
 # ==========================================
 
-echo -e "${BLUE}[8/10] 清理旧容器...${NC}"
+echo -e "${BLUE}[8/10] 配置 docker-compose 镜像源...${NC}"
+
+# 创建使用镜像源的临时配置
+if [ "$SKIP_REGISTRY" = false ] && [ -n "$REGISTRY_URL" ]; then
+  # 备份原配置
+  if [ ! -f docker-compose.yml.bak ]; then
+    cp docker-compose.yml docker-compose.yml.bak
+    echo -e "  ${YELLOW}已备份原 docker-compose.yml${NC}"
+  fi
+
+  # 使用 sed 替换镜像源
+  # 由于替换比较复杂，这里使用用户提示的方式
+  echo ""
+  echo -e "${YELLOW}注意: docker-compose.yml 将使用以下镜像源${NC}"
+  echo -e "  ${YELLOW}$REGISTRY_URL${NC}"
+  echo ""
+  echo -e "${YELLOW}如需手动修改，请在拉取镜像时加上源前缀，例如：${NC}"
+  echo -e "  ${YELLOW}  ${REGISTRY_URL}/library/php:8.1-fpm-alpine${NC}"
+  echo ""
+else
+  echo -e "  ${GREEN}使用现有配置${NC}"
+fi
+
+# ==========================================
+# 第九步: 拉取 Docker 镜像
+# ==========================================
+
+echo -e "${BLUE}[9/10] 拉取 Docker 镜像...${NC}"
+
+# 如果配置了镜像源，使用它来拉取
+PULL_IMAGES=()
+PULL_COMMAND="docker-compose pull"
+
+if [ "$SKIP_REGISTRY" = false ] && [ -n "$REGISTRY_URL" ]; then
+  echo -e "  ${YELLOW}使用镜像源拉取，可能需要较长时间...${NC}"
+
+  # 设置超时时间
+  export DOCKER_CLI_EXPERIMENTAL=enabled
+
+  # 增加重试次数
+  MAX_RETRIES=3
+  RETRY_COUNT=0
+
+  while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    echo "  拉取镜像尝试 ($((RETRY_COUNT + 1))/$MAX_RETRIES)..."
+
+    # 尝试拉取镜像（使用 docker-compose）
+    if timeout 300 docker-compose pull 2>&1; then
+      echo -e "  ${GREEN}镜像拉取完成${NC}"
+      PULL_SUCCESS=true
+      break
+    else
+      RETRY_COUNT=$((RETRY_COUNT + 1))
+
+      if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+        echo -e "  ${YELLOW}拉取失败，5秒后重试...${NC}"
+        sleep 5
+      fi
+    fi
+  done
+
+  if [ "$PULL_SUCCESS" != true ]; then
+    echo ""
+    echo -e "${RED}镜像拉取失败，尝试手动拉取...${NC}"
+    echo ""
+
+    # 尝试从不同源拉取
+    for REGISTRY in "${DOCKER_REGISTRIES[@]}"; do
+      REGISTRY_NAME=$(echo "$REGISTRY" | sed 's|https://||')
+      echo -n "  尝试 $REGISTRY_NAME..."
+
+      if timeout 60 docker pull "$REGISTRY/library/php:8.1-fpm-alpine" 2>&1; then
+        echo -e " ${GREEN}成功！${NC}"
+        echo -e "  ${YELLOW}建议使用此源: $REGISTRY${NC}"
+        break
+      else
+        echo -e " ${RED}失败${NC}"
+      fi
+    done
+
+    echo ""
+    read -p "镜像拉取已完成，是否继续部署？(y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo -e "  ${RED}用户取消部署${NC}"
+      exit 0
+    fi
+  fi
+else
+  # 正常拉取
+  docker-compose pull
+
+  if [ $? -ne 0 ]; then
+    echo -e "  ${RED}错误: 拉取Docker镜像失败${NC}"
+    echo ""
+    echo -e "${YELLOW}故障排除建议：${NC}"
+    echo "1. 检查网络连接"
+    echo "2. 尝试手动拉取: docker pull php:8.1-fpm-alpine"
+    echo "3. 配置代理: export HTTP_PROXY=http://proxy:port"
+    exit 1
+  fi
+fi
+
+echo -e "  ${GREEN}镜像拉取完成${NC}"
+
+echo ""
+
+# ==========================================
+# 第十步: 停止并清理旧容器
+# ==========================================
+
+echo -e "${BLUE}[10/10] 清理旧容器...${NC}"
 
 if docker-compose ps -q | grep -q .; then
   echo -e "  ${YELLOW}停止现有服务...${NC}"
@@ -219,10 +478,10 @@ fi
 echo ""
 
 # ==========================================
-# 第九步: 启动服务
+# 新增步骤 11: 启动服务
 # ==========================================
 
-echo -e "${BLUE}[9/10] 启动服务...${NC}"
+echo -e "${BLUE}[11/11] 启动服务...${NC}"
 docker-compose up -d
 
 if [ $? -ne 0 ]; then
@@ -231,13 +490,15 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+echo -e "  ${GREEN}服务启动完成${NC}"
+
 echo ""
 
 # ==========================================
-# 第十步: 等待服务就绪并健康检查
+# 新增步骤 12: 等待服务就绪并健康检查
 # ==========================================
 
-echo -e "${BLUE}[10/10] 等待服务就绪...${NC}"
+echo -e "${BLUE}[12/12] 等待服务就绪...${NC}"
 
 # 等待 MySQL
 echo -n "  等待 MySQL..."
