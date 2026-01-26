@@ -1,0 +1,21 @@
+[Unit]
+Description=小伍博客服务 - 自动启动脚本
+After=docker.service network-online.target
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+WorkingDirectory=/workspace
+ExecStart=/workspace/start-services.sh
+StandardOutput=journal
+StandardError=journal
+
+# 失败后自动重启
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
