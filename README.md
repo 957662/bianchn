@@ -292,6 +292,37 @@ sudo systemctl enable xiaowu-blog.service
 
 ### 常见问题
 
+### Docker 部署相关
+
+**Docker 镜像拉取超时/失败**
+
+如果遇到类似 "failed to resolve source metadata" 或网络超时错误，这是由于 Docker 镜像拉取网络问题：
+
+```bash
+# 方法1: 使用国内镜像加速（推荐）
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<EOF
+{
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://dockerhub.azk8s.cn"
+  ]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+# 方法2: 手动拉取镜像
+docker pull php:8.1-fpm-alpine
+docker pull mysql:8.0
+docker pull redis:7-alpine
+docker pull nginx:alpine
+
+# 方法3: 配置代理
+export HTTP_PROXY=http://your-proxy:port
+export HTTPS_PROXY=http://your-proxy:port
+```
+
 **Docker 容器无法启动**
 
 ```bash
