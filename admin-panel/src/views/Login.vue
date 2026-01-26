@@ -72,67 +72,66 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { User, Lock } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ref, reactive } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { User, Lock } from '@element-plus/icons-vue';
 
-const router = useRouter()
-const route = useRoute()
-const userStore = useUserStore()
+const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
 
-const loginFormRef = ref(null)
-const loading = ref(false)
+const loginFormRef = ref(null);
+const loading = ref(false);
 
 const loginForm = reactive({
   username: '',
   password: '',
-  remember: false
-})
+  remember: false,
+});
 
 const loginRules = {
   username: [
     { required: true, message: '请输入用户名或邮箱', trigger: 'blur' },
-    { min: 3, message: '用户名至少3个字符', trigger: 'blur' }
+    { min: 3, message: '用户名至少3个字符', trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码至少6个字符', trigger: 'blur' }
-  ]
-}
+    { min: 6, message: '密码至少6个字符', trigger: 'blur' },
+  ],
+};
 
 async function handleLogin() {
-  if (!loginFormRef.value) return
+  if (!loginFormRef.value) return;
 
   try {
-    await loginFormRef.value.validate()
-    loading.value = true
+    await loginFormRef.value.validate();
+    loading.value = true;
 
-    await userStore.login(loginForm.username, loginForm.password)
+    await userStore.login(loginForm.username, loginForm.password);
 
     // 保存记住我状态
     if (loginForm.remember) {
-      localStorage.setItem('remember_username', loginForm.username)
+      localStorage.setItem('remember_username', loginForm.username);
     } else {
-      localStorage.removeItem('remember_username')
+      localStorage.removeItem('remember_username');
     }
 
     // 重定向到原来要访问的页面或首页
-    const redirect = route.query.redirect || '/'
-    router.push(redirect)
+    const redirect = route.query.redirect || '/';
+    router.push(redirect);
   } catch (error) {
-    console.error('登录失败:', error)
+    console.error('登录失败:', error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 页面加载时恢复记住的用户名
-const rememberUsername = localStorage.getItem('remember_username')
+const rememberUsername = localStorage.getItem('remember_username');
 if (rememberUsername) {
-  loginForm.username = rememberUsername
-  loginForm.remember = true
+  loginForm.username = rememberUsername;
+  loginForm.remember = true;
 }
 </script>
 
@@ -259,7 +258,8 @@ if (rememberUsername) {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
     opacity: 0.6;
   }

@@ -5,7 +5,14 @@
         <div class="card-header">
           <span>评论管理</span>
           <el-badge :value="stats.pending" :hidden="stats.pending === 0">
-            <el-button type="warning" size="small" @click="filters.status = 'hold'; handleSearch()">
+            <el-button
+              type="warning"
+              size="small"
+              @click="
+                filters.status = 'hold';
+                handleSearch();
+              "
+            >
               待审核
             </el-button>
           </el-badge>
@@ -113,13 +120,7 @@
               />
               <p class="score-label">垃圾概率</p>
             </div>
-            <el-button
-              v-else
-              link
-              type="primary"
-              size="small"
-              @click="analyzeWithAI(row)"
-            >
+            <el-button v-else link type="primary" size="small" @click="analyzeWithAI(row)">
               AI检测
             </el-button>
           </template>
@@ -147,14 +148,7 @@
             >
               通过
             </el-button>
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="editComment(row)"
-            >
-              编辑
-            </el-button>
+            <el-button link type="primary" size="small" @click="editComment(row)"> 编辑 </el-button>
             <el-button
               v-if="row.status !== 'spam'"
               link
@@ -164,12 +158,7 @@
             >
               垃圾
             </el-button>
-            <el-button
-              link
-              type="danger"
-              size="small"
-              @click="deleteComment(row)"
-            >
+            <el-button link type="danger" size="small" @click="deleteComment(row)">
               删除
             </el-button>
           </template>
@@ -213,11 +202,7 @@
           <el-input v-model="editingComment.author_email" />
         </el-form-item>
         <el-form-item label="评论内容">
-          <el-input
-            v-model="editingComment.content"
-            type="textarea"
-            :rows="5"
-          />
+          <el-input v-model="editingComment.content" type="textarea" :rows="5" />
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="editingComment.status">
@@ -236,183 +221,181 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Refresh } from '@element-plus/icons-vue'
-import { commentsAPI } from '@/api'
-import dayjs from 'dayjs'
+import { ref, onMounted } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { Search, Refresh } from '@element-plus/icons-vue';
+import { commentsAPI } from '@/api';
+import dayjs from 'dayjs';
 
-const router = useRouter()
-const loading = ref(false)
+const loading = ref(false);
 
 // 统计数据
 const stats = ref({
   total: 0,
   approved: 0,
   pending: 0,
-  spam: 0
-})
+  spam: 0,
+});
 
 // 筛选条件
 const filters = ref({
   search: '',
-  status: ''
-})
+  status: '',
+});
 
 // 评论列表
-const comments = ref([])
+const comments = ref([]);
 
 // 选中的评论
-const selectedComments = ref([])
+const selectedComments = ref([]);
 
 // 分页
 const pagination = ref({
   page: 1,
   per_page: 20,
-  total: 0
-})
+  total: 0,
+});
 
 // 编辑对话框
-const editDialogVisible = ref(false)
-const editingComment = ref(null)
+const editDialogVisible = ref(false);
+const editingComment = ref(null);
 
 // 加载评论列表
 async function loadComments() {
-  loading.value = true
+  loading.value = true;
   try {
     const params = {
       page: pagination.value.page,
       per_page: pagination.value.per_page,
       search: filters.value.search,
-      status: filters.value.status
-    }
-    const data = await commentsAPI.getComments(params)
-    comments.value = data.comments || []
-    pagination.value.total = data.total || 0
+      status: filters.value.status,
+    };
+    const data = await commentsAPI.getComments(params);
+    comments.value = data.comments || [];
+    pagination.value.total = data.total || 0;
   } catch (error) {
-    console.error('加载评论列表失败:', error)
-    ElMessage.error('加载评论列表失败')
+    console.error('加载评论列表失败:', error);
+    ElMessage.error('加载评论列表失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 加载统计数据
 async function loadStats() {
   try {
-    const data = await commentsAPI.getStats()
-    stats.value = data || stats.value
+    const data = await commentsAPI.getStats();
+    stats.value = data || stats.value;
   } catch (error) {
-    console.error('加载统计数据失败:', error)
+    console.error('加载统计数据失败:', error);
   }
 }
 
 // 按状态筛选
 function filterByStatus(status) {
-  filters.value.status = status
-  handleSearch()
+  filters.value.status = status;
+  handleSearch();
 }
 
 // 搜索
 function handleSearch() {
-  pagination.value.page = 1
-  loadComments()
+  pagination.value.page = 1;
+  loadComments();
 }
 
 // 重置
 function handleReset() {
   filters.value = {
     search: '',
-    status: ''
-  }
-  pagination.value.page = 1
-  loadComments()
+    status: '',
+  };
+  pagination.value.page = 1;
+  loadComments();
 }
 
 // 选择变化
 function handleSelectionChange(selection) {
-  selectedComments.value = selection
+  selectedComments.value = selection;
 }
 
 // 查看文章
 function viewPost(postId) {
-  window.open(`/posts/${postId}`, '_blank')
+  window.open(`/posts/${postId}`, '_blank');
 }
 
 // AI检测
 async function analyzeWithAI(comment) {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await commentsAPI.analyzeSpam(comment.id)
-    comment.ai_spam_score = data.spam_score
-    ElMessage.success('AI分析完成')
+    const data = await commentsAPI.analyzeSpam(comment.id);
+    comment.ai_spam_score = data.spam_score;
+    ElMessage.success('AI分析完成');
   } catch (error) {
-    console.error('AI分析失败:', error)
-    ElMessage.error('AI分析失败')
+    console.error('AI分析失败:', error);
+    ElMessage.error('AI分析失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 获取分数颜色
 function getScoreColor(score) {
-  if (score < 0.3) return '#67c23a'
-  if (score < 0.7) return '#e6a23c'
-  return '#f56c6c'
+  if (score < 0.3) return '#67c23a';
+  if (score < 0.7) return '#e6a23c';
+  return '#f56c6c';
 }
 
 // 通过评论
 async function approveComment(comment) {
-  loading.value = true
+  loading.value = true;
   try {
-    await commentsAPI.updateComment(comment.id, { status: 'approved' })
-    ElMessage.success('评论已通过')
-    loadComments()
-    loadStats()
+    await commentsAPI.updateComment(comment.id, { status: 'approved' });
+    ElMessage.success('评论已通过');
+    loadComments();
+    loadStats();
   } catch (error) {
-    console.error('通过评论失败:', error)
-    ElMessage.error('通过评论失败')
+    console.error('通过评论失败:', error);
+    ElMessage.error('通过评论失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 编辑评论
 function editComment(comment) {
-  editingComment.value = { ...comment }
-  editDialogVisible.value = true
+  editingComment.value = { ...comment };
+  editDialogVisible.value = true;
 }
 
 // 保存评论
 async function saveComment() {
-  loading.value = true
+  loading.value = true;
   try {
-    await commentsAPI.updateComment(editingComment.value.id, editingComment.value)
-    ElMessage.success('评论已更新')
-    editDialogVisible.value = false
-    loadComments()
+    await commentsAPI.updateComment(editingComment.value.id, editingComment.value);
+    ElMessage.success('评论已更新');
+    editDialogVisible.value = false;
+    loadComments();
   } catch (error) {
-    console.error('更新评论失败:', error)
-    ElMessage.error('更新评论失败')
+    console.error('更新评论失败:', error);
+    ElMessage.error('更新评论失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 标记为垃圾
 async function markAsSpam(comment) {
-  loading.value = true
+  loading.value = true;
   try {
-    await commentsAPI.updateComment(comment.id, { status: 'spam' })
-    ElMessage.success('已标记为垃圾评论')
-    loadComments()
-    loadStats()
+    await commentsAPI.updateComment(comment.id, { status: 'spam' });
+    ElMessage.success('已标记为垃圾评论');
+    loadComments();
+    loadStats();
   } catch (error) {
-    console.error('标记失败:', error)
-    ElMessage.error('标记失败')
+    console.error('标记失败:', error);
+    ElMessage.error('标记失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
@@ -422,92 +405,94 @@ async function deleteComment(comment) {
     await ElMessageBox.confirm('确定要删除这条评论吗?', '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
-    })
+      type: 'warning',
+    });
 
-    loading.value = true
-    await commentsAPI.deleteComment(comment.id)
-    ElMessage.success('删除成功')
-    loadComments()
-    loadStats()
+    loading.value = true;
+    await commentsAPI.deleteComment(comment.id);
+    ElMessage.success('删除成功');
+    loadComments();
+    loadStats();
   } catch (error) {
     if (error !== 'cancel') {
-      console.error('删除失败:', error)
-      ElMessage.error('删除失败')
+      console.error('删除失败:', error);
+      ElMessage.error('删除失败');
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 批量通过
 async function batchApprove() {
-  loading.value = true
+  loading.value = true;
   try {
     const promises = selectedComments.value.map(comment =>
       commentsAPI.updateComment(comment.id, { status: 'approved' })
-    )
-    await Promise.all(promises)
-    ElMessage.success('批量通过成功')
-    loadComments()
-    loadStats()
+    );
+    await Promise.all(promises);
+    ElMessage.success('批量通过成功');
+    loadComments();
+    loadStats();
   } catch (error) {
-    console.error('批量通过失败:', error)
-    ElMessage.error('批量通过失败')
+    console.error('批量通过失败:', error);
+    ElMessage.error('批量通过失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 批量标记为垃圾
 async function batchSpam() {
-  loading.value = true
+  loading.value = true;
   try {
     const promises = selectedComments.value.map(comment =>
       commentsAPI.updateComment(comment.id, { status: 'spam' })
-    )
-    await Promise.all(promises)
-    ElMessage.success('批量标记成功')
-    loadComments()
-    loadStats()
+    );
+    await Promise.all(promises);
+    ElMessage.success('批量标记成功');
+    loadComments();
+    loadStats();
   } catch (error) {
-    console.error('批量标记失败:', error)
-    ElMessage.error('批量标记失败')
+    console.error('批量标记失败:', error);
+    ElMessage.error('批量标记失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 批量删除
 async function batchDelete() {
   try {
-    await ElMessageBox.confirm(`确定要删除选中的 ${selectedComments.value.length} 条评论吗?`, '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
+    await ElMessageBox.confirm(
+      `确定要删除选中的 ${selectedComments.value.length} 条评论吗?`,
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
 
-    loading.value = true
-    const promises = selectedComments.value.map(comment =>
-      commentsAPI.deleteComment(comment.id)
-    )
-    await Promise.all(promises)
-    ElMessage.success('批量删除成功')
-    loadComments()
-    loadStats()
+    loading.value = true;
+    const promises = selectedComments.value.map(comment => commentsAPI.deleteComment(comment.id));
+    await Promise.all(promises);
+    ElMessage.success('批量删除成功');
+    loadComments();
+    loadStats();
   } catch (error) {
     if (error !== 'cancel') {
-      console.error('批量删除失败:', error)
-      ElMessage.error('批量删除失败')
+      console.error('批量删除失败:', error);
+      ElMessage.error('批量删除失败');
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 格式化日期
 function formatDate(date) {
-  return dayjs(date).format('YYYY-MM-DD HH:mm')
+  return dayjs(date).format('YYYY-MM-DD HH:mm');
 }
 
 // 获取状态类型
@@ -515,9 +500,9 @@ function getStatusType(status) {
   const types = {
     approved: 'success',
     hold: 'warning',
-    spam: 'danger'
-  }
-  return types[status] || 'info'
+    spam: 'danger',
+  };
+  return types[status] || 'info';
 }
 
 // 获取状态标签
@@ -525,15 +510,15 @@ function getStatusLabel(status) {
   const labels = {
     approved: '已通过',
     hold: '待审核',
-    spam: '垃圾评论'
-  }
-  return labels[status] || status
+    spam: '垃圾评论',
+  };
+  return labels[status] || status;
 }
 
 onMounted(() => {
-  loadComments()
-  loadStats()
-})
+  loadComments();
+  loadStats();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -569,17 +554,23 @@ onMounted(() => {
 
   &.success {
     background: #f0f9ff;
-    &:hover { background: #e1f3ff; }
+    &:hover {
+      background: #e1f3ff;
+    }
   }
 
   &.warning {
     background: #fdf6ec;
-    &:hover { background: #faecd8; }
+    &:hover {
+      background: #faecd8;
+    }
   }
 
   &.danger {
     background: #fef0f0;
-    &:hover { background: #fde2e2; }
+    &:hover {
+      background: #fde2e2;
+    }
   }
 }
 

@@ -65,6 +65,23 @@
 
 ## 文档导航
 
+### 基础文档
 - [架构设计](./ARCHITECTURE.md) - 系统架构和技术设计
 - [接口定义](./INTERFACES.md) - 接口和交互规范
 - [开发指南](./DEVELOPER_GUIDE.md) - 开发环境和规范
+- [快速参考](./QUICK_REFERENCE.md) - 常用操作速查
+- [部署手册](./DEPLOYMENT_MANUAL.md) - 部署和维护指南
+
+### 🆕 优化和改进文档（新增）
+- **[优化概览](./OPTIMIZATION_OVERVIEW.md)** ⭐ **从这里开始** - 优化文档导航和快速开始
+- [需求优化分析](./REQUIREMENTS_OPTIMIZATION.md) - 详细的优化需求分析和路线图
+- [实施指南](./IMPLEMENTATION_GUIDE.md) - 分步骤的实施方案和代码示例
+- [优化检查清单](./OPTIMIZATION_CHECKLIST.md) - 进度跟踪和验收标准
+
+### 🎯 实施进度（持续更新）
+- **[代码质量实施日志](./CODE_QUALITY_IMPLEMENTATION_LOG.md)** ✅ - Task 2.1: ESLint/Prettier配置已完成，11个代码问题已修复
+- **[Week 1 交付报告](./WEEK_1_DELIVERY_REPORT.md)** ✅ **推荐阅读** - Week 1安全聚焦完成总结，3/5任务完成，95%部署就绪
+- **[Week 1 进度报告](./WEEK_1_PROGRESS_REPORT.md)** 📊 - 周度进度跟踪和指标统计
+- **[Task 1.2 完成总结](./TASK_1_2_COMPLETION_SUMMARY.md)** ✅ - CORS安全配置完整实施总结
+- **[CORS配置文档](./CORS_CONFIGURATION.md)** 🔐 - 跨域安全配置完整指南
+- **[快速部署指南](./QUICK_DEPLOYMENT_GUIDE.md)** 🚀 **快速开始** - 5分钟部署快速开始 + 完整部署清单

@@ -67,7 +67,12 @@
               <el-input v-model="dbConfig.user" placeholder="xiaowu_user" />
             </el-form-item>
             <el-form-item label="数据库密码" prop="password">
-              <el-input v-model="dbConfig.password" type="password" show-password placeholder="请输入密码" />
+              <el-input
+                v-model="dbConfig.password"
+                type="password"
+                show-password
+                placeholder="请输入密码"
+              />
             </el-form-item>
             <el-form-item label="测试连接">
               <el-button type="success" @click="testDB" :loading="testingDB">
@@ -76,9 +81,7 @@
             </el-form-item>
           </el-form>
           <div class="step-actions">
-            <el-button type="primary" @click="saveDB" :loading="savingDB">
-              保存并继续
-            </el-button>
+            <el-button type="primary" @click="saveDB" :loading="savingDB"> 保存并继续 </el-button>
             <el-button @click="skipTo('ai')">跳过</el-button>
           </div>
         </div>
@@ -86,7 +89,12 @@
         <!-- 步骤3: AI服务配置 -->
         <div v-show="currentStep === 'ai'" class="step-panel">
           <h3>AI服务配置</h3>
-          <el-alert title="配置AI服务后，系统将提供文章优化、智能搜索、内容推荐等功能" type="info" :closable="false" show-icon />
+          <el-alert
+            title="配置AI服务后，系统将提供文章优化、智能搜索、内容推荐等功能"
+            type="info"
+            :closable="false"
+            show-icon
+          />
           <el-form :model="aiConfig" :rules="aiRules" label-width="140px">
             <el-form-item label="AI服务提供商" prop="provider">
               <el-select v-model="aiConfig.provider" placeholder="请选择">
@@ -97,7 +105,12 @@
               </el-select>
             </el-form-item>
             <el-form-item label="API密钥" prop="apiKey">
-              <el-input v-model="aiConfig.apiKey" type="password" show-password placeholder="请输入API密钥" />
+              <el-input
+                v-model="aiConfig.apiKey"
+                type="password"
+                show-password
+                placeholder="请输入API密钥"
+              />
               <template #append>
                 <el-button @click="showAIKeyHelp">?</el-button>
               </template>
@@ -109,8 +122,14 @@
               <el-input-number v-model="aiConfig.maxTokens" :min="100" :max="128000" :step="100" />
             </el-form-item>
             <el-form-item label="温度参数">
-              <el-slider v-model="aiConfig.temperature" :min="0" :max="2" :step="0.1" :marks="{0:'精确', 1:'平衡', 2:'创意'}" />
-              <span style="margin-left: 12px; color: #666;">{{ aiConfig.temperature }}</span>
+              <el-slider
+                v-model="aiConfig.temperature"
+                :min="0"
+                :max="2"
+                :step="0.1"
+                :marks="{ 0: '精确', 1: '平衡', 2: '创意' }"
+              />
+              <span style="margin-left: 12px; color: #666">{{ aiConfig.temperature }}</span>
             </el-form-item>
             <el-form-item label="测试连接">
               <el-button type="success" @click="testAI" :loading="testingAI">
@@ -119,9 +138,7 @@
             </el-form-item>
           </el-form>
           <div class="step-actions">
-            <el-button type="primary" @click="saveAI" :loading="savingAI">
-              保存并继续
-            </el-button>
+            <el-button type="primary" @click="saveAI" :loading="savingAI"> 保存并继续 </el-button>
             <el-button @click="skipTo('cdn')">跳过</el-button>
           </div>
         </div>
@@ -129,7 +146,12 @@
         <!-- 步骤4: CDN配置 -->
         <div v-show="currentStep === 'cdn'" class="step-panel">
           <h3>CDN存储配置</h3>
-          <el-alert title="配置CDN后，静态资源和3D模型将上传到云端存储" type="info" :closable="false" show-icon />
+          <el-alert
+            title="配置CDN后，静态资源和3D模型将上传到云端存储"
+            type="info"
+            :closable="false"
+            show-icon
+          />
           <el-form :model="cdnConfig" :rules="cdnRules" label-width="140px">
             <el-form-item label="CDN提供商" prop="provider">
               <el-select v-model="cdnConfig.provider" placeholder="请选择">
@@ -144,7 +166,12 @@
                 <el-input v-model="cdnConfig.secretId" placeholder="请输入Secret ID" />
               </el-form-item>
               <el-form-item label="Secret Key" prop="secretKey">
-                <el-input v-model="cdnConfig.secretKey" type="password" show-password placeholder="请输入Secret Key" />
+                <el-input
+                  v-model="cdnConfig.secretKey"
+                  type="password"
+                  show-password
+                  placeholder="请输入Secret Key"
+                />
               </el-form-item>
               <el-form-item label="存储桶名称" prop="bucket">
                 <el-input v-model="cdnConfig.bucket" placeholder="xiaowu-blog" />
@@ -160,9 +187,7 @@
             </template>
           </el-form>
           <div class="step-actions">
-            <el-button type="primary" @click="saveCDN" :loading="savingCDN">
-              保存并继续
-            </el-button>
+            <el-button type="primary" @click="saveCDN" :loading="savingCDN"> 保存并继续 </el-button>
             <el-button @click="skipTo('email')">跳过</el-button>
           </div>
         </div>
@@ -170,7 +195,12 @@
         <!-- 步骤5: 邮件配置 -->
         <div v-show="currentStep === 'email'" class="step-panel">
           <h3>邮件服务配置</h3>
-          <el-alert title="配置邮件服务后，系统将发送通知邮件和用户相关邮件" type="info" :closable="false" show-icon />
+          <el-alert
+            title="配置邮件服务后，系统将发送通知邮件和用户相关邮件"
+            type="info"
+            :closable="false"
+            show-icon
+          />
           <el-form :model="emailConfig" :rules="emailRules" label-width="140px">
             <el-form-item label="SMTP服务器" prop="host">
               <el-input v-model="emailConfig.host" placeholder="smtp.gmail.com" />
@@ -186,7 +216,11 @@
               </el-select>
             </el-form-item>
             <el-form-item label="发件人邮箱" prop="fromEmail">
-              <el-input v-model="emailConfig.fromEmail" type="email" placeholder="noreply@example.com" />
+              <el-input
+                v-model="emailConfig.fromEmail"
+                type="email"
+                placeholder="noreply@example.com"
+              />
             </el-form-item>
             <el-form-item label="发件人名称" prop="fromName">
               <el-input v-model="emailConfig.fromName" placeholder="小伍同学博客" />
@@ -248,7 +282,12 @@
       <div class="ai-help-content">
         <h4>OpenAI</h4>
         <ol>
-          <li>访问 <el-link href="https://platform.openai.com/api-keys" target="_blank">https://platform.openai.com/api-keys</el-link></li>
+          <li>
+            访问
+            <el-link href="https://platform.openai.com/api-keys" target="_blank"
+              >https://platform.openai.com/api-keys</el-link
+            >
+          </li>
           <li>登录或注册账号</li>
           <li>点击"Create new secret key"创建密钥</li>
           <li>复制密钥并粘贴到上方</li>
@@ -256,7 +295,12 @@
         <el-divider />
         <h4>通义千问</h4>
         <ol>
-          <li>访问 <el-link href="https://dashscope.console.aliyun.com/apiKey" target="_blank">阿里云百炼控制台</el-link></li>
+          <li>
+            访问
+            <el-link href="https://dashscope.console.aliyun.com/apiKey" target="_blank"
+              >阿里云百炼控制台</el-link
+            >
+          </li>
           <li>创建API-KEY</li>
           <li>复制密钥并粘贴到上方</li>
         </ol>
@@ -266,65 +310,63 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { CircleCheck, Management, HomeFilled, QuestionFilled } from '@element-plus/icons-vue'
-import { deploymentAPI } from '@/api'
+import { ref, computed, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import { CircleCheck, Management, HomeFilled } from '@element-plus/icons-vue';
+import { deploymentAPI } from '@/api';
 
-const router = useRouter()
-const loading = ref(false)
+const loading = ref(false);
 
 // 步骤
-const currentStep = ref('env-check')
+const currentStep = ref('env-check');
 const currentStepIndex = computed(() => {
-  const steps = ['env-check', 'db', 'ai', 'cdn', 'email', 'finished']
-  return steps.indexOf(currentStep.value)
-})
+  const steps = ['env-check', 'db', 'ai', 'cdn', 'email', 'finished'];
+  return steps.indexOf(currentStep.value);
+});
 
 // 环境信息
-const checking = ref(false)
+const checking = ref(false);
 const envInfo = ref({
   php: null,
   mysql: null,
   redis: null,
-  wordpress: null
-})
+  wordpress: null,
+});
 
 // 数据库配置
-const testingDB = ref(false)
-const savingDB = ref(false)
+const testingDB = ref(false);
+const savingDB = ref(false);
 const dbConfig = ref({
   host: 'localhost',
   name: 'xiaowu_blog',
   user: 'xiaowu_user',
-  password: ''
-})
+  password: '',
+});
 
 // AI配置
-const testingAI = ref(false)
-const savingAI = ref(false)
+const testingAI = ref(false);
+const savingAI = ref(false);
 const aiConfig = ref({
   provider: 'openai',
   apiKey: '',
   model: 'gpt-4',
   maxTokens: 4000,
-  temperature: 0.7
-})
+  temperature: 0.7,
+});
 
 // CDN配置
-const savingCDN = ref(false)
+const savingCDN = ref(false);
 const cdnConfig = ref({
   provider: 'local',
   secretId: '',
   secretKey: '',
   bucket: 'xiaowu-blog',
-  region: 'ap-shanghai'
-})
+  region: 'ap-shanghai',
+});
 
 // 邮件配置
-const testingEmail = ref(false)
-const savingEmail = ref(false)
+const testingEmail = ref(false);
+const savingEmail = ref(false);
 const emailConfig = ref({
   host: 'smtp.gmail.com',
   port: 587,
@@ -332,168 +374,168 @@ const emailConfig = ref({
   fromEmail: '',
   fromName: '小伍同学博客',
   username: '',
-  password: ''
-})
+  password: '',
+});
 
 // AI密钥帮助
-const aiKeyHelpVisible = ref(false)
+const aiKeyHelpVisible = ref(false);
 
 // 表单验证规则
 const dbRules = {
   host: [{ required: true, message: '请输入数据库主机', trigger: 'blur' }],
   name: [{ required: true, message: '请输入数据库名称', trigger: 'blur' }],
   user: [{ required: true, message: '请输入数据库用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入数据库密码', trigger: 'blur' }]
-}
+  password: [{ required: true, message: '请输入数据库密码', trigger: 'blur' }],
+};
 
 const aiRules = {
   provider: [{ required: true, message: '请选择AI服务提供商', trigger: 'change' }],
   apiKey: [{ required: true, message: '请输入API密钥', trigger: 'blur' }],
-  model: [{ required: true, message: '请输入模型名称', trigger: 'blur' }]
-}
+  model: [{ required: true, message: '请输入模型名称', trigger: 'blur' }],
+};
 
 const cdnRules = {
-  provider: [{ required: true, message: '请选择CDN提供商', trigger: 'change' }]
-}
+  provider: [{ required: true, message: '请选择CDN提供商', trigger: 'change' }],
+};
 
 const emailRules = {
   host: [{ required: true, message: '请输入SMTP服务器', trigger: 'blur' }],
   port: [{ required: true, message: '请输入SMTP端口', trigger: 'blur' }],
   fromEmail: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }],
-  fromName: [{ required: true, message: '请输入发件人名称', trigger: 'blur' }]
-}
+  fromName: [{ required: true, message: '请输入发件人名称', trigger: 'blur' }],
+};
 
 // 生成的配置
-const generatedConfig = ref({})
+const generatedConfig = ref({});
 
 // 检查环境
 async function checkEnvironment() {
-  checking.value = true
+  checking.value = true;
   try {
-    const result = await deploymentAPI.checkEnvironment()
-    envInfo.value = result
+    const result = await deploymentAPI.checkEnvironment();
+    envInfo.value = result;
     if (result.php && result.mysql && result.redis && result.wordpress) {
-      ElMessage.success('环境检测通过')
-      setTimeout(() => skipTo('db'), 1000)
+      ElMessage.success('环境检测通过');
+      setTimeout(() => skipTo('db'), 1000);
     } else {
-      ElMessage.warning('部分环境检测未通过，请检查后继续')
+      ElMessage.warning('部分环境检测未通过，请检查后继续');
     }
   } catch (error) {
-    console.error('环境检测失败:', error)
-    ElMessage.error('环境检测失败')
+    console.error('环境检测失败:', error);
+    ElMessage.error('环境检测失败');
   } finally {
-    checking.value = false
+    checking.value = false;
   }
 }
 
 // 测试数据库连接
 async function testDB() {
-  testingDB.value = true
+  testingDB.value = true;
   try {
     await deploymentAPI.testDB({
       host: dbConfig.value.host,
       name: dbConfig.value.name,
       user: dbConfig.value.user,
-      password: dbConfig.value.password
-    })
-    ElMessage.success('数据库连接成功')
+      password: dbConfig.value.password,
+    });
+    ElMessage.success('数据库连接成功');
   } catch (error) {
-    console.error('数据库连接失败:', error)
-    ElMessage.error('数据库连接失败，请检查配置')
+    console.error('数据库连接失败:', error);
+    ElMessage.error('数据库连接失败，请检查配置');
   } finally {
-    testingDB.value = false
+    testingDB.value = false;
   }
 }
 
 // 保存数据库配置
 async function saveDB() {
-  const formRef = { validate: () => Promise.resolve() }
+  const formRef = { validate: () => Promise.resolve() };
   try {
-    await formRef.validate()
-    await deploymentAPI.saveConfig('db', dbConfig.value)
-    ElMessage.success('数据库配置已保存')
-    skipTo('ai')
+    await formRef.validate();
+    await deploymentAPI.saveConfig('db', dbConfig.value);
+    ElMessage.success('数据库配置已保存');
+    skipTo('ai');
   } catch (error) {
-    ElMessage.error('保存失败')
+    ElMessage.error('保存失败');
   }
 }
 
 // 测试AI连接
 async function testAI() {
-  testingAI.value = true
+  testingAI.value = true;
   try {
     await deploymentAPI.testAI({
       provider: aiConfig.value.provider,
       apiKey: aiConfig.value.apiKey,
-      model: aiConfig.value.model
-    })
-    ElMessage.success('AI服务连接成功')
+      model: aiConfig.value.model,
+    });
+    ElMessage.success('AI服务连接成功');
   } catch (error) {
-    console.error('AI连接测试失败:', error)
-    ElMessage.error('AI连接测试失败，请检查API密钥')
+    console.error('AI连接测试失败:', error);
+    ElMessage.error('AI连接测试失败，请检查API密钥');
   } finally {
-    testingAI.value = false
+    testingAI.value = false;
   }
 }
 
 // 保存AI配置
 async function saveAI() {
-  const formRef = { validate: () => Promise.resolve() }
+  const formRef = { validate: () => Promise.resolve() };
   try {
-    await formRef.validate()
-    await deploymentAPI.saveConfig('ai', aiConfig.value)
-    ElMessage.success('AI配置已保存')
-    skipTo('cdn')
+    await formRef.validate();
+    await deploymentAPI.saveConfig('ai', aiConfig.value);
+    ElMessage.success('AI配置已保存');
+    skipTo('cdn');
   } catch (error) {
-    ElMessage.error('保存失败')
+    ElMessage.error('保存失败');
   }
 }
 
 // 保存CDN配置
 async function saveCDN() {
-  savingCDN.value = true
+  savingCDN.value = true;
   try {
-    await deploymentAPI.saveConfig('cdn', cdnConfig.value)
-    ElMessage.success('CDN配置已保存')
-    skipTo('email')
+    await deploymentAPI.saveConfig('cdn', cdnConfig.value);
+    ElMessage.success('CDN配置已保存');
+    skipTo('email');
   } catch (error) {
-    ElMessage.error('保存失败')
+    ElMessage.error('保存失败');
   } finally {
-    savingCDN.value = false
+    savingCDN.value = false;
   }
 }
 
 // 测试邮件
 async function testEmail() {
-  testingEmail.value = true
+  testingEmail.value = true;
   try {
-    await deploymentAPI.testEmail(emailConfig.value)
-    ElMessage.success('测试邮件已发送，请检查收件箱')
+    await deploymentAPI.testEmail(emailConfig.value);
+    ElMessage.success('测试邮件已发送，请检查收件箱');
   } catch (error) {
-    console.error('邮件测试失败:', error)
-    ElMessage.error('邮件发送失败，请检查配置')
+    console.error('邮件测试失败:', error);
+    ElMessage.error('邮件发送失败，请检查配置');
   } finally {
-    testingEmail.value = false
+    testingEmail.value = false;
   }
 }
 
 // 保存邮件配置
 async function saveEmail() {
-  savingEmail.value = true
+  savingEmail.value = true;
   try {
-    await deploymentAPI.saveConfig('email', emailConfig.value)
-    ElMessage.success('邮件配置已保存')
-    finishSetup()
+    await deploymentAPI.saveConfig('email', emailConfig.value);
+    ElMessage.success('邮件配置已保存');
+    finishSetup();
   } catch (error) {
-    ElMessage.error('保存失败')
+    ElMessage.error('保存失败');
   } finally {
-    savingEmail.value = false
+    savingEmail.value = false;
   }
 }
 
 // 跳转到指定步骤
 function skipTo(step) {
-  currentStep.value = step
+  currentStep.value = step;
 }
 
 // 完成设置
@@ -503,57 +545,57 @@ async function finishSetup() {
       db: dbConfig.value,
       ai: aiConfig.value,
       cdn: cdnConfig.value,
-      email: emailConfig.value
-    })
-    generatedConfig.value = config.php
-    currentStep.value = 'finished'
+      email: emailConfig.value,
+    });
+    generatedConfig.value = config.php;
+    currentStep.value = 'finished';
   } catch (error) {
-    console.error('生成配置失败:', error)
-    ElMessage.error('生成配置失败')
+    console.error('生成配置失败:', error);
+    ElMessage.error('生成配置失败');
   }
 }
 
 // 进入管理后台
 function goToAdmin() {
-  window.location.href = '/wp-admin/'
+  window.location.href = '/wp-admin/';
 }
 
 // 访问前台页面
 function goToHome() {
-  window.location.href = '/'
+  window.location.href = '/';
 }
 
 // 复制配置
 function copyConfig() {
-  navigator.clipboard.writeText(generatedConfig.value.php)
-  ElMessage.success('配置已复制到剪贴板')
+  navigator.clipboard.writeText(generatedConfig.value.php);
+  ElMessage.success('配置已复制到剪贴板');
 }
 
 // 显示AI密钥帮助
 function showAIKeyHelp() {
-  aiKeyHelpVisible.value = true
+  aiKeyHelpVisible.value = true;
 }
 
 // 获取步骤标签
 function getStepLabel() {
   const labels = {
     'env-check': '环境检测',
-    'db': '数据库',
-    'ai': 'AI服务',
-    'cdn': 'CDN',
-    'email': '邮件',
-    'finished': '已完成'
-  }
-  return labels[currentStep.value] || '向导'
+    db: '数据库',
+    ai: 'AI服务',
+    cdn: 'CDN',
+    email: '邮件',
+    finished: '已完成',
+  };
+  return labels[currentStep.value] || '向导';
 }
 
 // 检查是否是首次部署
 onMounted(() => {
-  const isFirstDeploy = localStorage.getItem('xiaowu_first_deploy') !== 'false'
+  const isFirstDeploy = localStorage.getItem('xiaowu_first_deploy') !== 'false';
   if (!isFirstDeploy) {
-    currentStep.value = 'env-check'
+    currentStep.value = 'env-check';
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -646,8 +688,8 @@ h3 {
 .ai-help-content {
   h4 {
     margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
+    font-size: 16px;
+    font-weight: 600;
   }
 
   ol {

@@ -1,12 +1,6 @@
 <template>
   <div class="post-edit-container">
-    <el-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      label-width="100px"
-      v-loading="loading"
-    >
+    <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" v-loading="loading">
       <el-card>
         <template #header>
           <div class="card-header">
@@ -139,12 +133,7 @@
                   style="width: 100%"
                   placeholder="输入标签，按回车添加"
                 >
-                  <el-option
-                    v-for="tag in tags"
-                    :key="tag.id"
-                    :label="tag.name"
-                    :value="tag.id"
-                  />
+                  <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
                 </el-select>
               </el-form-item>
             </el-card>
@@ -223,10 +212,7 @@
               </el-form-item>
 
               <el-form-item label="关键词">
-                <el-input
-                  v-model="form.seo_keywords"
-                  placeholder="用逗号分隔"
-                />
+                <el-input v-model="form.seo_keywords" placeholder="用逗号分隔" />
               </el-form-item>
             </el-card>
           </el-col>
@@ -237,36 +223,36 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import {
-  MagicStick, Cpu, Picture, DocumentCopy
-} from '@element-plus/icons-vue'
-import { postsAPI, aiAPI, mediaAPI } from '@/api'
-import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
+import { MagicStick, Cpu, Picture, DocumentCopy } from '@element-plus/icons-vue';
+import { postsAPI, aiAPI } from '@/api';
+import MarkdownIt from 'markdown-it';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 
-const route = useRoute()
-const router = useRouter()
-const formRef = ref(null)
-const loading = ref(false)
+const route = useRoute();
+const router = useRouter();
+const formRef = ref(null);
+const loading = ref(false);
 
 // 是否编辑模式
-const isEdit = computed(() => !!route.params.id)
+const isEdit = computed(() => !!route.params.id);
 
 // Markdown渲染器
 const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return hljs.highlight(str, { language: lang }).value
-      } catch (__) {}
+        return hljs.highlight(str, { language: lang }).value;
+      } catch (e) {
+        // Handle highlight error silently
+      }
     }
-    return ''
-  }
-})
+    return '';
+  },
+});
 
 // 表单数据
 const form = ref({
@@ -281,62 +267,62 @@ const form = ref({
   featured_image: '',
   seo_title: '',
   seo_description: '',
-  seo_keywords: ''
-})
+  seo_keywords: '',
+});
 
 // 表单验证规则
 const rules = {
   title: [
     { required: true, message: '请输入文章标题', trigger: 'blur' },
-    { min: 5, message: '标题至少5个字符', trigger: 'blur' }
+    { min: 5, message: '标题至少5个字符', trigger: 'blur' },
   ],
   content: [
     { required: true, message: '请输入文章内容', trigger: 'blur' },
-    { min: 50, message: '内容至少50个字符', trigger: 'blur' }
-  ]
-}
+    { min: 50, message: '内容至少50个字符', trigger: 'blur' },
+  ],
+};
 
 // 分类列表
-const categories = ref([])
+const categories = ref([]);
 
 // 标签列表
-const tags = ref([])
+const tags = ref([]);
 
 // 作者列表
-const authors = ref([])
+const authors = ref([]);
 
 // 上传URL
-const uploadUrl = computed(() => '/wp-json/wp/v2/media')
+const uploadUrl = computed(() => '/wp-json/wp/v2/media');
 
 // 上传请求头
 const uploadHeaders = computed(() => ({
-  'Authorization': `Bearer ${localStorage.getItem('wp_token')}`,
-  'X-WP-Nonce': localStorage.getItem('wp_nonce')
-}))
+  Authorization: `Bearer ${localStorage.getItem('wp_token')}`,
+  'X-WP-Nonce': localStorage.getItem('wp_nonce'),
+}));
 
 // 渲染后的内容
 const renderedContent = computed(() => {
-  if (!form.value.content) return ''
-  return md.render(form.value.content)
-})
+  if (!form.value.content) return '';
+  return md.render(form.value.content);
+});
 
 // 加载文章数据
 async function loadPost() {
-  if (!isEdit.value) return
+  if (!isEdit.value) return;
 
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await postsAPI.getPost(route.params.id)
+    const data = await postsAPI.getPost(route.params.id);
     form.value = {
       ...form.value,
-      ...data
-    }
+      ...data,
+    };
   } catch (error) {
-    console.error('加载文章失败:', error)
-    ElMessage.error('加载文章失败')
-    router.back()
+    console.error('加载文章失败:', error);
+    ElMessage.error('加载文章失败');
+    router.back();
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
@@ -346,152 +332,152 @@ async function loadHelperData() {
     const [catsData, tagsData, authorsData] = await Promise.all([
       postsAPI.getCategories(),
       postsAPI.getTags(),
-      postsAPI.getAuthors()
-    ])
-    categories.value = catsData || []
-    tags.value = tagsData || []
-    authors.value = authorsData || []
+      postsAPI.getAuthors(),
+    ]);
+    categories.value = catsData || [];
+    tags.value = tagsData || [];
+    authors.value = authorsData || [];
   } catch (error) {
-    console.error('加载辅助数据失败:', error)
+    console.error('加载辅助数据失败:', error);
   }
 }
 
 // 保存草稿
 async function saveDraft() {
-  form.value.status = 'draft'
-  await savePost()
+  form.value.status = 'draft';
+  await savePost();
 }
 
 // 发布
 async function publish() {
-  form.value.status = 'publish'
-  await savePost()
+  form.value.status = 'publish';
+  await savePost();
 }
 
 // 保存文章
 async function savePost() {
-  if (!formRef.value) return
+  if (!formRef.value) return;
 
   try {
-    await formRef.value.validate()
-    loading.value = true
+    await formRef.value.validate();
+    loading.value = true;
 
     if (isEdit.value) {
-      await postsAPI.updatePost(route.params.id, form.value)
-      ElMessage.success('更新成功')
+      await postsAPI.updatePost(route.params.id, form.value);
+      ElMessage.success('更新成功');
     } else {
-      const data = await postsAPI.createPost(form.value)
-      ElMessage.success('创建成功')
-      router.replace(`/posts/edit/${data.id}`)
+      const data = await postsAPI.createPost(form.value);
+      ElMessage.success('创建成功');
+      router.replace(`/posts/edit/${data.id}`);
     }
   } catch (error) {
     if (error !== 'cancel') {
-      console.error('保存失败:', error)
-      ElMessage.error('保存失败')
+      console.error('保存失败:', error);
+      ElMessage.error('保存失败');
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // AI生成大纲
 async function generateOutline() {
   if (!form.value.title) {
-    ElMessage.warning('请先输入文章标题')
-    return
+    ElMessage.warning('请先输入文章标题');
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await aiAPI.generateOutline(form.value.title)
-    form.value.content = data.outline
-    ElMessage.success('大纲生成成功')
+    const data = await aiAPI.generateOutline(form.value.title);
+    form.value.content = data.outline;
+    ElMessage.success('大纲生成成功');
   } catch (error) {
-    console.error('生成大纲失败:', error)
-    ElMessage.error('生成大纲失败')
+    console.error('生成大纲失败:', error);
+    ElMessage.error('生成大纲失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // AI优化内容
 async function optimizeContent() {
   if (!form.value.content) {
-    ElMessage.warning('请先输入文章内容')
-    return
+    ElMessage.warning('请先输入文章内容');
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await postsAPI.optimizeWithAI(route.params.id, form.value.content)
-    form.value.content = data.optimized_content
-    ElMessage.success('内容优化成功')
+    const data = await postsAPI.optimizeWithAI(route.params.id, form.value.content);
+    form.value.content = data.optimized_content;
+    ElMessage.success('内容优化成功');
   } catch (error) {
-    console.error('优化内容失败:', error)
-    ElMessage.error('优化内容失败')
+    console.error('优化内容失败:', error);
+    ElMessage.error('优化内容失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // AI生成图片
 async function generateImage() {
   if (!form.value.title) {
-    ElMessage.warning('请先输入文章标题')
-    return
+    ElMessage.warning('请先输入文章标题');
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await aiAPI.generateImage(form.value.title)
-    form.value.featured_image = data.url
-    ElMessage.success('图片生成成功')
+    const data = await aiAPI.generateImage(form.value.title);
+    form.value.featured_image = data.url;
+    ElMessage.success('图片生成成功');
   } catch (error) {
-    console.error('生成图片失败:', error)
-    ElMessage.error('生成图片失败')
+    console.error('生成图片失败:', error);
+    ElMessage.error('生成图片失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 插入图片
 function insertImage() {
   // TODO: 打开图片选择器
-  ElMessage.info('图片插入功能开发中')
+  ElMessage.info('图片插入功能开发中');
 }
 
 // 插入代码块
 function insertCode() {
-  const code = '\n```javascript\n// 在这里输入代码\n```\n'
-  form.value.content += code
+  const code = '\n```javascript\n// 在这里输入代码\n```\n';
+  form.value.content += code;
 }
 
 // 图片上传成功
 function handleImageSuccess(response) {
-  form.value.featured_image = response.source_url
-  ElMessage.success('图片上传成功')
+  form.value.featured_image = response.source_url;
+  ElMessage.success('图片上传成功');
 }
 
 // 图片上传前验证
 function beforeImageUpload(file) {
-  const isImage = file.type.startsWith('image/')
-  const isLt5M = file.size / 1024 / 1024 < 5
+  const isImage = file.type.startsWith('image/');
+  const isLt5M = file.size / 1024 / 1024 < 5;
 
   if (!isImage) {
-    ElMessage.error('只能上传图片文件')
-    return false
+    ElMessage.error('只能上传图片文件');
+    return false;
   }
   if (!isLt5M) {
-    ElMessage.error('图片大小不能超过 5MB')
-    return false
+    ElMessage.error('图片大小不能超过 5MB');
+    return false;
   }
-  return true
+  return true;
 }
 
 onMounted(() => {
-  loadPost()
-  loadHelperData()
-})
+  loadPost();
+  loadHelperData();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -529,7 +515,12 @@ onMounted(() => {
   padding: 20px;
   line-height: 1.8;
 
-  :deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5), :deep(h6) {
+  :deep(h1),
+  :deep(h2),
+  :deep(h3),
+  :deep(h4),
+  :deep(h5),
+  :deep(h6) {
     margin: 20px 0 10px;
     font-weight: 600;
   }

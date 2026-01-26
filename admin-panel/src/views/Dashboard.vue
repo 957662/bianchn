@@ -4,7 +4,10 @@
       <!-- 统计卡片 -->
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card">
-          <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <div
+            class="stat-icon"
+            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+          >
             <el-icon :size="32"><Document /></el-icon>
           </div>
           <div class="stat-content">
@@ -23,7 +26,10 @@
 
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card">
-          <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+          <div
+            class="stat-icon"
+            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+          >
             <el-icon :size="32"><ChatDotRound /></el-icon>
           </div>
           <div class="stat-content">
@@ -31,7 +37,9 @@
             <h2 class="stat-value">{{ stats.comments }}</h2>
             <p class="stat-trend">
               <span :class="['trend', stats.commentsGrowth >= 0 ? 'up' : 'down']">
-                <el-icon><CaretTop v-if="stats.commentsGrowth >= 0" /><CaretBottom v-else /></el-icon>
+                <el-icon
+                  ><CaretTop v-if="stats.commentsGrowth >= 0" /><CaretBottom v-else
+                /></el-icon>
                 {{ Math.abs(stats.commentsGrowth) }}%
               </span>
               <span class="trend-label">较上月</span>
@@ -42,7 +50,10 @@
 
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card">
-          <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+          <div
+            class="stat-icon"
+            style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+          >
             <el-icon :size="32"><User /></el-icon>
           </div>
           <div class="stat-content">
@@ -61,7 +72,10 @@
 
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card">
-          <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+          <div
+            class="stat-icon"
+            style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
+          >
             <el-icon :size="32"><View /></el-icon>
           </div>
           <div class="stat-content">
@@ -79,7 +93,7 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" style="margin-top: 20px;">
+    <el-row :gutter="20" style="margin-top: 20px">
       <!-- 访问量趋势图 -->
       <el-col :xs="24" :lg="16">
         <el-card class="chart-card">
@@ -107,14 +121,16 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" style="margin-top: 20px;">
+    <el-row :gutter="20" style="margin-top: 20px">
       <!-- 最新文章 -->
       <el-col :xs="24" :lg="12">
         <el-card>
           <template #header>
             <div class="card-header">
               <span>最新文章</span>
-              <el-link type="primary" :underline="false" @click="$router.push('/posts')">查看全部</el-link>
+              <el-link type="primary" :underline="false" @click="$router.push('/posts')"
+                >查看全部</el-link
+              >
             </div>
           </template>
           <el-table :data="recentPosts" style="width: 100%" v-loading="loading">
@@ -148,7 +164,9 @@
           <template #header>
             <div class="card-header">
               <span>最新评论</span>
-              <el-link type="primary" :underline="false" @click="$router.push('/comments')">查看全部</el-link>
+              <el-link type="primary" :underline="false" @click="$router.push('/comments')"
+                >查看全部</el-link
+              >
             </div>
           </template>
           <el-table :data="recentComments" style="width: 100%" v-loading="loading">
@@ -166,7 +184,7 @@
     </el-row>
 
     <!-- 快捷操作 -->
-    <el-row :gutter="20" style="margin-top: 20px;">
+    <el-row :gutter="20" style="margin-top: 20px">
       <el-col :span="24">
         <el-card>
           <template #header>
@@ -176,18 +194,10 @@
             <el-button type="primary" :icon="EditPen" @click="$router.push('/posts/create')">
               写文章
             </el-button>
-            <el-button :icon="Picture" @click="$router.push('/gallery')">
-              上传3D模型
-            </el-button>
-            <el-button :icon="Setting" @click="$router.push('/ai')">
-              AI设置
-            </el-button>
-            <el-button :icon="Search" @click="$router.push('/search')">
-              搜索管理
-            </el-button>
-            <el-button :icon="UserFilled" @click="$router.push('/users')">
-              用户管理
-            </el-button>
+            <el-button :icon="Picture" @click="$router.push('/gallery')"> 上传3D模型 </el-button>
+            <el-button :icon="Setting" @click="$router.push('/ai')"> AI设置 </el-button>
+            <el-button :icon="Search" @click="$router.push('/search')"> 搜索管理 </el-button>
+            <el-button :icon="UserFilled" @click="$router.push('/users')"> 用户管理 </el-button>
           </div>
         </el-card>
       </el-col>
@@ -196,25 +206,34 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 import {
-  Document, ChatDotRound, User, View, CaretTop, CaretBottom,
-  EditPen, Picture, Setting, Search, UserFilled
-} from '@element-plus/icons-vue'
-import VChart from 'vue-echarts'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { LineChart, PieChart } from 'echarts/charts'
+  Document,
+  ChatDotRound,
+  User,
+  View,
+  CaretTop,
+  CaretBottom,
+  EditPen,
+  Picture,
+  Setting,
+  Search,
+  UserFilled,
+} from '@element-plus/icons-vue';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart, PieChart } from 'echarts/charts';
 import {
   TitleComponent,
   TooltipComponent,
   LegendComponent,
-  GridComponent
-} from 'echarts/components'
-import { statsAPI, postsAPI, commentsAPI } from '@/api'
-import dayjs from 'dayjs'
+  GridComponent,
+} from 'echarts/components';
+import { statsAPI } from '@/api';
+import dayjs from 'dayjs';
 
 // 注册ECharts组件
 use([
@@ -224,13 +243,13 @@ use([
   TitleComponent,
   TooltipComponent,
   LegendComponent,
-  GridComponent
-])
+  GridComponent,
+]);
 
-const router = useRouter()
-const loading = ref(false)
-const chartsLoading = ref(false)
-const visitsPeriod = ref('week')
+const router = useRouter();
+const loading = ref(false);
+const chartsLoading = ref(false);
+const visitsPeriod = ref('week');
 
 // 统计数据
 const stats = ref({
@@ -241,49 +260,49 @@ const stats = ref({
   postsGrowth: 0,
   commentsGrowth: 0,
   usersGrowth: 0,
-  viewsGrowth: 0
-})
+  viewsGrowth: 0,
+});
 
 // 最新文章
-const recentPosts = ref([])
+const recentPosts = ref([]);
 
 // 最新评论
-const recentComments = ref([])
+const recentComments = ref([]);
 
 // 访问量数据
 const visitsData = ref({
   dates: [],
-  visits: []
-})
+  visits: [],
+});
 
 // 内容分布数据
 const contentData = ref({
   published: 0,
   draft: 0,
-  pending: 0
-})
+  pending: 0,
+});
 
 // 访问量图表配置
 const visitsChartOption = computed(() => ({
   tooltip: {
     trigger: 'axis',
     axisPointer: {
-      type: 'shadow'
-    }
+      type: 'shadow',
+    },
   },
   grid: {
     left: '3%',
     right: '4%',
     bottom: '3%',
-    containLabel: true
+    containLabel: true,
   },
   xAxis: {
     type: 'category',
     data: visitsData.value.dates,
-    boundaryGap: false
+    boundaryGap: false,
   },
   yAxis: {
-    type: 'value'
+    type: 'value',
   },
   series: [
     {
@@ -299,31 +318,31 @@ const visitsChartOption = computed(() => ({
           y2: 1,
           colorStops: [
             { offset: 0, color: 'rgba(102, 126, 234, 0.6)' },
-            { offset: 1, color: 'rgba(102, 126, 234, 0.1)' }
-          ]
-        }
+            { offset: 1, color: 'rgba(102, 126, 234, 0.1)' },
+          ],
+        },
       },
       lineStyle: {
         color: '#667eea',
-        width: 3
+        width: 3,
       },
       itemStyle: {
-        color: '#667eea'
+        color: '#667eea',
       },
-      data: visitsData.value.visits
-    }
-  ]
-}))
+      data: visitsData.value.visits,
+    },
+  ],
+}));
 
 // 内容分布图表配置
 const contentChartOption = computed(() => ({
   tooltip: {
     trigger: 'item',
-    formatter: '{b}: {c} ({d}%)'
+    formatter: '{b}: {c} ({d}%)',
   },
   legend: {
     orient: 'vertical',
-    left: 'left'
+    left: 'left',
   },
   series: [
     {
@@ -333,65 +352,65 @@ const contentChartOption = computed(() => ({
       itemStyle: {
         borderRadius: 10,
         borderColor: '#fff',
-        borderWidth: 2
+        borderWidth: 2,
       },
       label: {
         show: true,
-        formatter: '{b}: {d}%'
+        formatter: '{b}: {d}%',
       },
       data: [
         { value: contentData.value.published, name: '已发布', itemStyle: { color: '#67c23a' } },
         { value: contentData.value.draft, name: '草稿', itemStyle: { color: '#909399' } },
-        { value: contentData.value.pending, name: '待审核', itemStyle: { color: '#e6a23c' } }
-      ]
-    }
-  ]
-}))
+        { value: contentData.value.pending, name: '待审核', itemStyle: { color: '#e6a23c' } },
+      ],
+    },
+  ],
+}));
 
 // 加载仪表盘数据
 async function loadDashboardData() {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await statsAPI.getDashboard()
-    stats.value = data.stats || stats.value
-    recentPosts.value = (data.recent_posts || []).slice(0, 5)
-    recentComments.value = (data.recent_comments || []).slice(0, 5)
-    contentData.value = data.content_stats || contentData.value
+    const data = await statsAPI.getDashboard();
+    stats.value = data.stats || stats.value;
+    recentPosts.value = (data.recent_posts || []).slice(0, 5);
+    recentComments.value = (data.recent_comments || []).slice(0, 5);
+    contentData.value = data.content_stats || contentData.value;
   } catch (error) {
-    console.error('加载仪表盘数据失败:', error)
-    ElMessage.error('加载数据失败')
+    console.error('加载仪表盘数据失败:', error);
+    ElMessage.error('加载数据失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 加载访问量数据
 async function loadVisitsData() {
-  chartsLoading.value = true
+  chartsLoading.value = true;
   try {
-    const data = await statsAPI.getVisits({ period: visitsPeriod.value })
-    visitsData.value = data
+    const data = await statsAPI.getVisits({ period: visitsPeriod.value });
+    visitsData.value = data;
   } catch (error) {
-    console.error('加载访问量数据失败:', error)
+    console.error('加载访问量数据失败:', error);
   } finally {
-    chartsLoading.value = false
+    chartsLoading.value = false;
   }
 }
 
 // 格式化数字
 function formatNumber(num) {
   if (num >= 10000) {
-    return (num / 10000).toFixed(1) + 'w'
+    return (num / 10000).toFixed(1) + 'w';
   }
   if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'k'
+    return (num / 1000).toFixed(1) + 'k';
   }
-  return num
+  return num;
 }
 
 // 格式化日期
 function formatDate(date) {
-  return dayjs(date).format('YYYY-MM-DD HH:mm')
+  return dayjs(date).format('YYYY-MM-DD HH:mm');
 }
 
 // 获取状态类型
@@ -400,9 +419,9 @@ function getStatusType(status) {
     publish: 'success',
     draft: 'info',
     pending: 'warning',
-    private: 'danger'
-  }
-  return types[status] || 'info'
+    private: 'danger',
+  };
+  return types[status] || 'info';
 }
 
 // 获取状态标签
@@ -411,20 +430,20 @@ function getStatusLabel(status) {
     publish: '已发布',
     draft: '草稿',
     pending: '待审核',
-    private: '私密'
-  }
-  return labels[status] || status
+    private: '私密',
+  };
+  return labels[status] || status;
 }
 
 // 编辑文章
 function editPost(id) {
-  router.push(`/posts/edit/${id}`)
+  router.push(`/posts/edit/${id}`);
 }
 
 onMounted(() => {
-  loadDashboardData()
-  loadVisitsData()
-})
+  loadDashboardData();
+  loadVisitsData();
+});
 </script>
 
 <style lang="scss" scoped>

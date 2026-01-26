@@ -5,8 +5,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 </script>
 
 <style lang="scss">

@@ -101,7 +101,12 @@
               <el-button type="primary" :icon="Refresh" :loading="indexing" @click="rebuildIndex">
                 重建索引
               </el-button>
-              <el-button type="success" :icon="MagicStick" :loading="optimizing" @click="optimizeIndex">
+              <el-button
+                type="success"
+                :icon="MagicStick"
+                :loading="optimizing"
+                @click="optimizeIndex"
+              >
                 优化索引
               </el-button>
             </div>
@@ -127,7 +132,7 @@
           </el-form-item>
           <el-form-item label="缓存时间">
             <el-input-number v-model="searchConfig.cache_ttl" :min="0" :max="3600" />
-            <span style="margin-left: 8px; color: #999;">秒</span>
+            <span style="margin-left: 8px; color: #999">秒</span>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="saveConfig">保存配置</el-button>
@@ -139,36 +144,36 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Refresh, MagicStick } from '@element-plus/icons-vue'
-import { searchAPI } from '@/api'
-import dayjs from 'dayjs'
+import { ref, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import { Refresh, MagicStick } from '@element-plus/icons-vue';
+import { searchAPI } from '@/api';
+import dayjs from 'dayjs';
 
-const indexing = ref(false)
-const optimizing = ref(false)
+const indexing = ref(false);
+const optimizing = ref(false);
 
 // 统计数据
 const stats = ref({
   total_searches: 0,
   with_results: 0,
   no_results: 0,
-  avg_time: 0
-})
+  avg_time: 0,
+});
 
 // 热门搜索
-const popularSearches = ref([])
+const popularSearches = ref([]);
 
 // 最近搜索
-const recentSearches = ref([])
+const recentSearches = ref([]);
 
 // 索引信息
 const indexInfo = ref({
   status: 'ready',
   posts_indexed: 0,
   comments_indexed: 0,
-  last_updated: null
-})
+  last_updated: null,
+});
 
 // 搜索配置
 const searchConfig = ref({
@@ -176,98 +181,98 @@ const searchConfig = ref({
   semantic_search: true,
   fuzzy_match: true,
   max_results: 20,
-  cache_ttl: 300
-})
+  cache_ttl: 300,
+});
 
 // 加载统计数据
 async function loadStats() {
   try {
-    const data = await searchAPI.getStats(30)
-    stats.value = data || stats.value
+    const data = await searchAPI.getStats(30);
+    stats.value = data || stats.value;
   } catch (error) {
-    console.error('加载统计数据失败:', error)
+    console.error('加载统计数据失败:', error);
   }
 }
 
 // 加载热门搜索
 async function loadPopularSearches() {
   try {
-    const data = await searchAPI.getPopular(10)
-    popularSearches.value = data || []
+    const data = await searchAPI.getPopular(10);
+    popularSearches.value = data || [];
   } catch (error) {
-    console.error('加载热门搜索失败:', error)
+    console.error('加载热门搜索失败:', error);
   }
 }
 
 // 加载最近搜索
 async function loadRecentSearches() {
   try {
-    const data = await searchAPI.getRecentSearches(20)
-    recentSearches.value = data || []
+    const data = await searchAPI.getRecentSearches(20);
+    recentSearches.value = data || [];
   } catch (error) {
-    console.error('加载最近搜索失败:', error)
+    console.error('加载最近搜索失败:', error);
   }
 }
 
 // 重建索引
 async function rebuildIndex() {
-  indexing.value = true
+  indexing.value = true;
   try {
-    await searchAPI.rebuildIndex('all')
-    ElMessage.success('索引重建任务已启动')
-    loadIndexInfo()
+    await searchAPI.rebuildIndex('all');
+    ElMessage.success('索引重建任务已启动');
+    loadIndexInfo();
   } catch (error) {
-    console.error('重建索引失败:', error)
-    ElMessage.error('重建索引失败')
+    console.error('重建索引失败:', error);
+    ElMessage.error('重建索引失败');
   } finally {
-    indexing.value = false
+    indexing.value = false;
   }
 }
 
 // 优化索引
 async function optimizeIndex() {
-  optimizing.value = true
+  optimizing.value = true;
   try {
-    await searchAPI.optimizeIndex()
-    ElMessage.success('索引优化成功')
-    loadIndexInfo()
+    await searchAPI.optimizeIndex();
+    ElMessage.success('索引优化成功');
+    loadIndexInfo();
   } catch (error) {
-    console.error('优化索引失败:', error)
-    ElMessage.error('优化索引失败')
+    console.error('优化索引失败:', error);
+    ElMessage.error('优化索引失败');
   } finally {
-    optimizing.value = false
+    optimizing.value = false;
   }
 }
 
 // 保存配置
 async function saveConfig() {
   try {
-    await searchAPI.saveConfig(searchConfig.value)
-    ElMessage.success('配置保存成功')
+    await searchAPI.saveConfig(searchConfig.value);
+    ElMessage.success('配置保存成功');
   } catch (error) {
-    console.error('保存配置失败:', error)
-    ElMessage.error('保存配置失败')
+    console.error('保存配置失败:', error);
+    ElMessage.error('保存配置失败');
   }
 }
 
 // 搜索关键词
 function searchKeyword(keyword) {
   // TODO: 跳转到前台搜索
-  console.log('搜索:', keyword)
-  ElMessage.info(`搜索功能: ${keyword}`)
+  console.log('搜索:', keyword);
+  ElMessage.info(`搜索功能: ${keyword}`);
 }
 
 // 获取标签类型
 function getTagType(count) {
-  if (count >= 50) return 'danger'
-  if (count >= 20) return 'warning'
-  return ''
+  if (count >= 50) return 'danger';
+  if (count >= 20) return 'warning';
+  return '';
 }
 
 // 格式化日期
 function formatDate(date) {
-  if (!date) return '-'
-  return dayjs(date).format('YYYY-MM-DD HH:mm')
+  if (!date) return '-';
+  return dayjs(date).format('YYYY-MM-DD HH:mm');
 }
 
 // 加载索引信息
@@ -277,16 +282,16 @@ function loadIndexInfo() {
     status: 'ready',
     posts_indexed: Math.floor(Math.random() * 1000),
     comments_indexed: Math.floor(Math.random() * 500),
-    last_updated: new Date()
-  }
+    last_updated: new Date(),
+  };
 }
 
 onMounted(() => {
-  loadStats()
-  loadPopularSearches()
-  loadRecentSearches()
-  loadIndexInfo()
-})
+  loadStats();
+  loadPopularSearches();
+  loadRecentSearches();
+  loadIndexInfo();
+});
 </script>
 
 <style lang="scss" scoped>

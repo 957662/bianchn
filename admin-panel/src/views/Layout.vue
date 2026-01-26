@@ -4,7 +4,12 @@
       <!-- 侧边栏 -->
       <el-aside :width="sidebarWidth" class="layout-aside">
         <div class="logo-container">
-          <img v-if="!appStore.sidebarCollapsed" src="@/assets/images/logo.svg" alt="Logo" class="logo" />
+          <img
+            v-if="!appStore.sidebarCollapsed"
+            src="@/assets/images/logo.svg"
+            alt="Logo"
+            class="logo"
+          />
           <span v-if="!appStore.sidebarCollapsed" class="logo-text">小伍博客</span>
         </div>
 
@@ -39,7 +44,9 @@
 
             <el-breadcrumb separator="/">
               <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-              <el-breadcrumb-item v-if="currentRoute">{{ currentRoute.meta?.title }}</el-breadcrumb-item>
+              <el-breadcrumb-item v-if="currentRoute">{{
+                currentRoute.meta?.title
+              }}</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
 
@@ -104,56 +111,56 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { useAppStore } from '@/stores/app'
-import { ElMessageBox } from 'element-plus'
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@/stores/app';
+import { ElMessageBox } from 'element-plus';
 
-const route = useRoute()
-const router = useRouter()
-const userStore = useUserStore()
-const appStore = useAppStore()
+const route = useRoute();
+const router = useRouter();
+const userStore = useUserStore();
+const appStore = useAppStore();
 
-const sidebarWidth = computed(() => appStore.sidebarCollapsed ? '64px' : '200px')
-const activeMenu = computed(() => route.path)
-const currentRoute = computed(() => route)
+const sidebarWidth = computed(() => (appStore.sidebarCollapsed ? '64px' : '200px'));
+const activeMenu = computed(() => route.path);
+const currentRoute = computed(() => route);
 
 const menuRoutes = computed(() => {
-  return router.options.routes
-    .find(r => r.path === '/')
-    ?.children?.filter(r => !r.meta?.hidden) || []
-})
+  return (
+    router.options.routes.find(r => r.path === '/')?.children?.filter(r => !r.meta?.hidden) || []
+  );
+});
 
 function toggleTheme() {
-  const newTheme = appStore.theme === 'light' ? 'dark' : 'light'
-  appStore.setTheme(newTheme)
+  const newTheme = appStore.theme === 'light' ? 'dark' : 'light';
+  appStore.setTheme(newTheme);
 }
 
 function refreshPage() {
-  router.go(0)
+  router.go(0);
 }
 
 async function handleCommand(command) {
   switch (command) {
     case 'profile':
-      router.push('/profile')
-      break
+      router.push('/profile');
+      break;
     case 'settings':
-      router.push('/settings')
-      break
+      router.push('/settings');
+      break;
     case 'logout':
       try {
         await ElMessageBox.confirm('确定要退出登录吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
-        })
-        userStore.logout()
+          type: 'warning',
+        });
+        userStore.logout();
       } catch {
         // 用户取消
       }
-      break
+      break;
   }
 }
 </script>

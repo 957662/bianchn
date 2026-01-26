@@ -4,9 +4,7 @@
       <template #header>
         <div class="card-header">
           <span>3D图库</span>
-          <el-button type="primary" :icon="Plus" @click="handleUpload">
-            上传模型
-          </el-button>
+          <el-button type="primary" :icon="Plus" @click="handleUpload"> 上传模型 </el-button>
         </div>
       </template>
 
@@ -24,7 +22,12 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-select v-model="filters.category" placeholder="分类" clearable @change="handleSearch">
+            <el-select
+              v-model="filters.category"
+              placeholder="分类"
+              clearable
+              @change="handleSearch"
+            >
               <el-option label="全部分类" value="" />
               <el-option
                 v-for="cat in categories"
@@ -43,19 +46,9 @@
 
       <!-- 模型网格 -->
       <div v-loading="loading" class="models-grid">
-        <div
-          v-for="model in models"
-          :key="model.id"
-          class="model-card"
-          @click="viewModel(model)"
-        >
+        <div v-for="model in models" :key="model.id" class="model-card" @click="viewModel(model)">
           <div class="model-thumbnail">
-            <el-image
-              v-if="model.thumbnail"
-              :src="model.thumbnail"
-              fit="cover"
-              lazy
-            >
+            <el-image v-if="model.thumbnail" :src="model.thumbnail" fit="cover" lazy>
               <template #placeholder>
                 <div class="image-placeholder">
                   <el-icon :size="40"><Picture /></el-icon>
@@ -65,7 +58,12 @@
             <div v-else class="image-placeholder">
               <el-icon :size="40"><Picture /></el-icon>
             </div>
-            <el-tag v-if="model.status === 'pending'" type="warning" size="small" class="status-tag">
+            <el-tag
+              v-if="model.status === 'pending'"
+              type="warning"
+              size="small"
+              class="status-tag"
+            >
               待审核
             </el-tag>
           </div>
@@ -107,11 +105,7 @@
     </el-card>
 
     <!-- 上传对话框 -->
-    <el-dialog
-      v-model="uploadDialogVisible"
-      title="上传3D模型"
-      width="700px"
-    >
+    <el-dialog v-model="uploadDialogVisible" title="上传3D模型" width="700px">
       <el-form :model="uploadForm" :rules="uploadRules" label-width="100px">
         <el-form-item label="模型文件" prop="file" required>
           <el-upload
@@ -122,9 +116,7 @@
             accept=".glb,.gltf,.obj,.fbx"
             drag
           >
-            <el-button type="primary" :icon="Upload">
-              选择文件
-            </el-button>
+            <el-button type="primary" :icon="Upload"> 选择文件 </el-button>
             <template #tip>
               <div class="el-upload__tip">
                 支持格式: GLB, GLTF, OBJ, FBX<br />
@@ -149,12 +141,7 @@
         </el-form-item>
         <el-form-item label="分类" prop="category">
           <el-select v-model="uploadForm.category" placeholder="请选择分类" style="width: 100%">
-            <el-option
-              v-for="cat in categories"
-              :key="cat.id"
-              :label="cat.name"
-              :value="cat.id"
-            />
+            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name" :value="cat.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="缩略图">
@@ -167,7 +154,7 @@
             <el-button>选择缩略图</el-button>
           </el-upload>
           <div v-if="uploadForm.thumbnail" class="thumb-preview">
-            <el-image :src="uploadForm.thumbnail" style="width: 100px; height: 100px;" fit="cover" />
+            <el-image :src="uploadForm.thumbnail" style="width: 100px; height: 100px" fit="cover" />
           </div>
         </el-form-item>
       </el-form>
@@ -178,11 +165,7 @@
     </el-dialog>
 
     <!-- 模型详情对话框 -->
-    <el-dialog
-      v-model="detailDialogVisible"
-      :title="currentModel?.title"
-      width="800px"
-    >
+    <el-dialog v-model="detailDialogVisible" :title="currentModel?.title" width="800px">
       <el-tabs v-if="currentModel">
         <el-tab-pane label="预览">
           <div class="model-viewer">
@@ -202,11 +185,21 @@
             <el-descriptions-item label="模型ID">{{ currentModel.id }}</el-descriptions-item>
             <el-descriptions-item label="模型名称">{{ currentModel.title }}</el-descriptions-item>
             <el-descriptions-item label="文件格式">{{ currentModel.format }}</el-descriptions-item>
-            <el-descriptions-item label="文件大小">{{ formatFileSize(currentModel.file_size) }}</el-descriptions-item>
-            <el-descriptions-item label="上传时间">{{ formatDate(currentModel.created_at) }}</el-descriptions-item>
-            <el-descriptions-item label="分类">{{ currentModel.category?.name }}</el-descriptions-item>
-            <el-descriptions-item label="浏览次数">{{ currentModel.view_count || 0 }}</el-descriptions-item>
-            <el-descriptions-item label="下载次数">{{ currentModel.download_count || 0 }}</el-descriptions-item>
+            <el-descriptions-item label="文件大小">{{
+              formatFileSize(currentModel.file_size)
+            }}</el-descriptions-item>
+            <el-descriptions-item label="上传时间">{{
+              formatDate(currentModel.created_at)
+            }}</el-descriptions-item>
+            <el-descriptions-item label="分类">{{
+              currentModel.category?.name
+            }}</el-descriptions-item>
+            <el-descriptions-item label="浏览次数">{{
+              currentModel.view_count || 0
+            }}</el-descriptions-item>
+            <el-descriptions-item label="下载次数">{{
+              currentModel.download_count || 0
+            }}</el-descriptions-item>
           </el-descriptions>
         </el-tab-pane>
         <el-tab-pane label="设置">
@@ -241,37 +234,46 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Search, Refresh, Picture, View, Download, Document, Upload } from '@element-plus/icons-vue'
-import { galleryAPI } from '@/api'
-import dayjs from 'dayjs'
+import { ref, onMounted } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import {
+  Plus,
+  Search,
+  Refresh,
+  Picture,
+  View,
+  Download,
+  Document,
+  Upload,
+} from '@element-plus/icons-vue';
+import { galleryAPI } from '@/api';
+import dayjs from 'dayjs';
 
-const loading = ref(false)
-const uploading = ref(false)
+const loading = ref(false);
+const uploading = ref(false);
 
 // 筛选条件
 const filters = ref({
   search: '',
-  category: ''
-})
+  category: '',
+});
 
 // 分类列表
-const categories = ref([])
+const categories = ref([]);
 
 // 模型列表
-const models = ref([])
+const models = ref([]);
 
 // 分页
 const pagination = ref({
   page: 1,
   per_page: 24,
-  total: 0
-})
+  total: 0,
+});
 
 // 上传对话框
-const uploadDialogVisible = ref(false)
-const uploadRef = ref(null)
+const uploadDialogVisible = ref(false);
+const uploadRef = ref(null);
 
 // 上传表单
 const uploadForm = ref({
@@ -279,76 +281,72 @@ const uploadForm = ref({
   title: '',
   description: '',
   category: '',
-  thumbnail: ''
-})
+  thumbnail: '',
+});
 
 // 上传表单验证规则
 const uploadRules = {
-  title: [
-    { required: true, message: '请输入模型标题', trigger: 'blur' }
-  ],
-  file: [
-    { required: true, message: '请选择模型文件', trigger: 'change' }
-  ]
-}
+  title: [{ required: true, message: '请输入模型标题', trigger: 'blur' }],
+  file: [{ required: true, message: '请选择模型文件', trigger: 'change' }],
+};
 
 // 详情对话框
-const detailDialogVisible = ref(false)
-const currentModel = ref(null)
-const viewerContainer = ref(null)
+const detailDialogVisible = ref(false);
+const currentModel = ref(null);
+const viewerContainer = ref(null);
 
 // 查看器配置
 const viewerConfig = ref({
   auto_rotate: true,
   lighting: 'studio',
-  background_color: '#ffffff'
-})
+  background_color: '#ffffff',
+});
 
 // 加载模型列表
 async function loadModels() {
-  loading.value = true
+  loading.value = true;
   try {
     const params = {
       page: pagination.value.page,
       per_page: pagination.value.per_page,
       search: filters.value.search,
-      category: filters.value.category
-    }
-    const data = await galleryAPI.getModels(params)
-    models.value = data.models || []
-    pagination.value.total = data.total || 0
+      category: filters.value.category,
+    };
+    const data = await galleryAPI.getModels(params);
+    models.value = data.models || [];
+    pagination.value.total = data.total || 0;
   } catch (error) {
-    console.error('加载模型列表失败:', error)
-    ElMessage.error('加载模型列表失败')
+    console.error('加载模型列表失败:', error);
+    ElMessage.error('加载模型列表失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // 加载分类列表
 async function loadCategories() {
   try {
-    const data = await galleryAPI.getCategories()
-    categories.value = data || []
+    const data = await galleryAPI.getCategories();
+    categories.value = data || [];
   } catch (error) {
-    console.error('加载分类失败:', error)
+    console.error('加载分类失败:', error);
   }
 }
 
 // 搜索
 function handleSearch() {
-  pagination.value.page = 1
-  loadModels()
+  pagination.value.page = 1;
+  loadModels();
 }
 
 // 重置
 function handleReset() {
   filters.value = {
     search: '',
-    category: ''
-  }
-  pagination.value.page = 1
-  loadModels()
+    category: '',
+  };
+  pagination.value.page = 1;
+  loadModels();
 }
 
 // 上传模型
@@ -358,63 +356,63 @@ function handleUpload() {
     title: '',
     description: '',
     category: '',
-    thumbnail: ''
-  }
-  uploadDialogVisible.value = true
+    thumbnail: '',
+  };
+  uploadDialogVisible.value = true;
 }
 
 // 文件变化
 function handleFileChange(file) {
-  uploadForm.value.file = file.raw
+  uploadForm.value.file = file.raw;
 }
 
 // 缩略图变化
 function handleThumbChange(file) {
-  uploadForm.value.thumbnail = URL.createObjectURL(file.raw)
+  uploadForm.value.thumbnail = URL.createObjectURL(file.raw);
 }
 
 // 提交上传
 async function submitUpload() {
-  uploading.value = true
+  uploading.value = true;
   try {
-    const formData = new FormData()
-    formData.append('model', uploadForm.value.file)
-    formData.append('title', uploadForm.value.title)
-    formData.append('description', uploadForm.value.description)
-    formData.append('category', uploadForm.value.category)
+    const formData = new FormData();
+    formData.append('model', uploadForm.value.file);
+    formData.append('title', uploadForm.value.title);
+    formData.append('description', uploadForm.value.description);
+    formData.append('category', uploadForm.value.category);
 
-    const data = await galleryAPI.uploadModel(formData)
-    ElMessage.success('上传成功')
-    uploadDialogVisible.value = false
-    loadModels()
+    await galleryAPI.uploadModel(formData);
+    ElMessage.success('上传成功');
+    uploadDialogVisible.value = false;
+    loadModels();
   } catch (error) {
-    console.error('上传失败:', error)
-    ElMessage.error('上传失败')
+    console.error('上传失败:', error);
+    ElMessage.error('上传失败');
   } finally {
-    uploading.value = false
+    uploading.value = false;
   }
 }
 
 // 查看模型
 function viewModel(model) {
-  currentModel.value = model
+  currentModel.value = model;
   viewerConfig.value = model.viewer_config || {
     auto_rotate: true,
     lighting: 'studio',
-    background_color: '#ffffff'
-  }
-  detailDialogVisible.value = true
+    background_color: '#ffffff',
+  };
+  detailDialogVisible.value = true;
 }
 
 // 下载模型
 function downloadModel() {
-  if (!currentModel.value?.model_url) return
-  window.open(currentModel.value.model_url, '_blank')
+  if (!currentModel.value?.model_url) return;
+  window.open(currentModel.value.model_url, '_blank');
 }
 
 // 编辑模型
 function editModel() {
-  ElMessage.info('编辑功能开发中')
+  ElMessage.info('编辑功能开发中');
   // TODO: 实现编辑功能
 }
 
@@ -424,21 +422,21 @@ async function deleteModel() {
     await ElMessageBox.confirm(`确定要删除模型"${currentModel.value.title}"吗?`, '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
-    })
+      type: 'warning',
+    });
 
-    loading.value = true
-    await galleryAPI.deleteModel(currentModel.value.id)
-    ElMessage.success('删除成功')
-    detailDialogVisible.value = false
-    loadModels()
+    loading.value = true;
+    await galleryAPI.deleteModel(currentModel.value.id);
+    ElMessage.success('删除成功');
+    detailDialogVisible.value = false;
+    loadModels();
   } catch (error) {
     if (error !== 'cancel') {
-      console.error('删除失败:', error)
-      ElMessage.error('删除失败')
+      console.error('删除失败:', error);
+      ElMessage.error('删除失败');
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
@@ -446,33 +444,33 @@ async function deleteModel() {
 async function saveViewerConfig() {
   try {
     await galleryAPI.updateModel(currentModel.value.id, {
-      viewer_config: viewerConfig.value
-    })
-    ElMessage.success('设置保存成功')
+      viewer_config: viewerConfig.value,
+    });
+    ElMessage.success('设置保存成功');
   } catch (error) {
-    console.error('保存设置失败:', error)
-    ElMessage.error('保存设置失败')
+    console.error('保存设置失败:', error);
+    ElMessage.error('保存设置失败');
   }
 }
 
 // 格式化文件大小
 function formatFileSize(bytes) {
-  if (!bytes) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+  if (!bytes) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 }
 
 // 格式化日期
 function formatDate(date) {
-  return dayjs(date).format('YYYY-MM-DD HH:mm')
+  return dayjs(date).format('YYYY-MM-DD HH:mm');
 }
 
 onMounted(() => {
-  loadModels()
-  loadCategories()
-})
+  loadModels();
+  loadCategories();
+});
 </script>
 
 <style lang="scss" scoped>
