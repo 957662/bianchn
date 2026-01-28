@@ -109,7 +109,10 @@ router.beforeEach((to, from, next) => {
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} - 小伍博客管理后台` : '小伍博客管理后台';
 
-  if (requiresAuth && !userStore.isLoggedIn) {
+  // 检查是否配置了 API URL，未配置则允许访问
+  const hasApiUrl = !!import.meta.env.VITE_API_URL;
+
+  if (requiresAuth && !userStore.isLoggedIn && hasApiUrl) {
     next({ name: 'Login', query: { redirect: to.fullPath } });
   } else if (to.name === 'Login' && userStore.isLoggedIn) {
     next({ name: 'Dashboard' });

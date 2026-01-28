@@ -2,6 +2,7 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import router from '@/router';
 
+// API 客户端配置
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/wp-json',
   timeout: 30000,
