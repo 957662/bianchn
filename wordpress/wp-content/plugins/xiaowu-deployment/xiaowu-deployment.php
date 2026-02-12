@@ -511,8 +511,8 @@ class Xiaowu_Deployment_Wizard_Plugin
       'NONCE_SALT' => wp_generate_password(64)
     );
 
-    ob_start();
-    ?>
+    // 使用 heredoc 生成配置文件内容
+    $content = <<<EOPHP
 <?php
 /**
  * WordPress基础配置文件
@@ -523,47 +523,47 @@ class Xiaowu_Deployment_Wizard_Plugin
  */
 
 // 数据库配置
-define('DB_NAME', '<?php echo esc_js($db_name); ?>');
-define('DB_USER', '<?php echo esc_js($db_user); ?>');
-define('DB_PASSWORD', '<?php echo esc_js($db_password); ?>');
-define('DB_HOST', '<?php echo esc_js($db_host); ?>');
+define('DB_NAME', '{$db_name}');
+define('DB_USER', '{$db_user}');
+define('DB_PASSWORD', '{$db_password}');
+define('DB_HOST', '{$db_host}');
 define('DB_CHARSET', 'utf8mb4');
 
 // 身份验证密钥
-define('AUTH_KEY',         '<?php echo $auth_keys['AUTH_KEY']; ?>');
-define('SECURE_AUTH_KEY',  '<?php echo $auth_keys['SECURE_AUTH_KEY']; ?>');
-define('LOGGED_IN_KEY',    '<?php echo $auth_keys['LOGGED_IN_KEY']; ?>');
-define('NONCE_KEY',        '<?php echo $auth_keys['NONCE_KEY']; ?>');
-define('AUTH_SALT',        '<?php echo $auth_keys['AUTH_SALT']; ?>');
-define('SECURE_AUTH_SALT', '<?php echo $auth_keys['SECURE_AUTH_SALT']; ?>');
-define('LOGGED_IN_SALT',   '<?php echo $auth_keys['LOGGED_IN_SALT']; ?>');
-define('NONCE_SALT',       '<?php echo $auth_keys['NONCE_SALT']; ?>');
+define('AUTH_KEY',         '{$auth_keys['AUTH_KEY']}');
+define('SECURE_AUTH_KEY',  '{$auth_keys['SECURE_AUTH_KEY']}');
+define('LOGGED_IN_KEY',    '{$auth_keys['LOGGED_IN_KEY']}');
+define('NONCE_KEY',        '{$auth_keys['NONCE_KEY']}');
+define('AUTH_SALT',        '{$auth_keys['AUTH_SALT']}');
+define('SECURE_AUTH_SALT', '{$auth_keys['SECURE_AUTH_SALT']}');
+define('LOGGED_IN_SALT',   '{$auth_keys['LOGGED_IN_SALT']}');
+define('NONCE_SALT',       '{$auth_keys['NONCE_SALT']}');
 
 // WordPress 数据表前缀
-$table_prefix = 'wp_';
+\$table_prefix = 'wp_';
 
 // AI服务配置
-define('XIAOWU_AI_PROVIDER', '<?php echo esc_js($ai_provider); ?>');
-define('XIAOWU_AI_API_KEY', '<?php echo esc_js($ai_api_key); ?>');
-define('XIAOWU_AI_MODEL', '<?php echo esc_js($ai_model); ?>');
-define('XIAOWU_AI_MAX_TOKENS', <?php echo intval($ai_max_tokens); ?>);
-define('XIAOWU_AI_TEMPERATURE', <?php echo floatval($ai_temperature); ?>);
+define('XIAOWU_AI_PROVIDER', '{$ai_provider}');
+define('XIAOWU_AI_API_KEY', '{$ai_api_key}');
+define('XIAOWU_AI_MODEL', '{$ai_model}');
+define('XIAOWU_AI_MAX_TOKENS', {$ai_max_tokens});
+define('XIAOWU_AI_TEMPERATURE', {$ai_temperature});
 
 // CDN配置
-define('XIAOWU_CDN_PROVIDER', '<?php echo esc_js($cdn_provider); ?>');
-define('XIAOWU_CDN_SECRET_ID', '<?php echo esc_js($cdn_secret_id); ?>');
-define('XIAOWU_CDN_SECRET_KEY', '<?php echo esc_js($cdn_secret_key); ?>');
-define('XIAOWU_CDN_BUCKET', '<?php echo esc_js($cdn_bucket); ?>');
-define('XIAOWU_CDN_REGION', '<?php echo esc_js($cdn_region); ?>');
+define('XIAOWU_CDN_PROVIDER', '{$cdn_provider}');
+define('XIAOWU_CDN_SECRET_ID', '{$cdn_secret_id}');
+define('XIAOWU_CDN_SECRET_KEY', '{$cdn_secret_key}');
+define('XIAOWU_CDN_BUCKET', '{$cdn_bucket}');
+define('XIAOWU_CDN_REGION', '{$cdn_region}');
 
 // SMTP配置
-define('XIAOWU_SMTP_HOST', '<?php echo esc_js($smtp_host); ?>');
-define('XIAOWU_SMTP_PORT', <?php echo intval($smtp_port); ?>);
-define('XIAOWU_SMTP_ENCRYPTION', '<?php echo esc_js($smtp_encryption); ?>');
-define('XIAOWU_SMTP_FROM_EMAIL', '<?php echo esc_js($smtp_from_email); ?>');
-define('XIAOWU_SMTP_FROM_NAME', '<?php echo esc_js($smtp_from_name); ?>');
-define('XIAOWU_SMTP_USERNAME', '<?php echo esc_js($smtp_username); ?>');
-define('XIAOWU_SMTP_PASSWORD', '<?php echo esc_js($smtp_password); ?>');
+define('XIAOWU_SMTP_HOST', '{$smtp_host}');
+define('XIAOWU_SMTP_PORT', {$smtp_port});
+define('XIAOWU_SMTP_ENCRYPTION', '{$smtp_encryption}');
+define('XIAOWU_SMTP_FROM_EMAIL', '{$smtp_from_email}');
+define('XIAOWU_SMTP_FROM_NAME', '{$smtp_from_name}');
+define('XIAOWU_SMTP_USERNAME', '{$smtp_username}');
+define('XIAOWU_SMTP_PASSWORD', '{$smtp_password}');
 
 /** 绝对路径 */
 if (!defined('ABSPATH')) {
@@ -572,8 +572,8 @@ if (!defined('ABSPATH')) {
 
 /** 设置WordPress变量和包含文件 */
 require_once ABSPATH . 'wp-settings.php';
-<?php
-    $content = ob_get_clean();
+EOPHP;
+
     return $content;
   }
 
