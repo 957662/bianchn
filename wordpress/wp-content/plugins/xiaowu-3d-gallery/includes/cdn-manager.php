@@ -29,7 +29,7 @@ class Xiaowu_CDN_Manager
      */
     public function __construct()
     {
-        $this->provider = defined('CDN_PROVIDER') ? CDN_PROVIDER : getenv('CDN_PROVIDER') ?: 'local';
+        $this->provider = (defined('CDN_PROVIDER') ? CDN_PROVIDER : getenv('CDN_PROVIDER')) ?: 'local';
         $this->config = array(
             'bucket' => defined('CDN_BUCKET') ? CDN_BUCKET : getenv('CDN_BUCKET'),
             'region' => defined('CDN_REGION') ? CDN_REGION : getenv('CDN_REGION'),

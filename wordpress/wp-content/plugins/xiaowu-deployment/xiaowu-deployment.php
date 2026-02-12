@@ -61,6 +61,9 @@ class Xiaowu_Deployment_Wizard_Plugin
     // 插件激活
     register_activation_hook(__FILE__, array($this, 'activate'));
 
+    // 检测 WordPress 是否已安装，如果已安装则标记部署完成
+    add_action('init', array($this, 'check_installation_status'));
+
     // REST API路由
     add_action('rest_api_init', array($this, 'register_rest_routes'));
 
@@ -69,6 +72,29 @@ class Xiaowu_Deployment_Wizard_Plugin
 
     // 加载管理资源
     add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
+  }
+
+  /**
+   * 检测 WordPress 安装状态
+   */
+  public function check_installation_status()
+  {
+    // 如果已经标记为完成，不再检查
+    if (get_option('xiaowu_deployment_completed')) {
+      return;
+    }
+
+    // 检查 WordPress 是否已安装
+    if (!function_exists('wp_get_current_user')) {
+      return;
+    }
+
+    // 检查是否有管理员用户
+    $admins = get_users(array('role' => 'administrator'));
+    if (!empty($admins)) {
+      // WordPress 已安装，自动标记部署完成
+      update_option('xiaowu_deployment_completed', current_time('mysql'));
+    }
   }
 
   /**

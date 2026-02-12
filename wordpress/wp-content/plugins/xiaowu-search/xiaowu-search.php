@@ -26,7 +26,7 @@ require_once XIAOWU_SEARCH_PATH . 'includes/class-search-api.php';
 require_once XIAOWU_SEARCH_PATH . 'includes/class-search-suggestions.php';
 require_once XIAOWU_SEARCH_PATH . 'includes/class-ai-search.php';
 require_once XIAOWU_SEARCH_PATH . 'includes/class-search-analytics.php';
-require_once XIAOWU_SEARCH_PATH . 'admin/settings-page.php';
+// 管理页面在钩子中加载，不在这里直接加载
 
 class Xiaowu_Search
 {

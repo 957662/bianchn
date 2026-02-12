@@ -80,7 +80,7 @@ define('WP_REDIS_DATABASE', getenv('REDIS_DB') ?: 0);
  */
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
-define('WP_DEBUG_DISPLAY', false);
+define('WP_DEBUG_DISPLAY', true);
 
 /**
  * AI服务配置
