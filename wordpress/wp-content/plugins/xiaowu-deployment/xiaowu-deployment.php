@@ -84,16 +84,20 @@ class Xiaowu_Deployment_Wizard_Plugin
       return;
     }
 
-    // 检查 WordPress 是否已安装
-    if (!function_exists('wp_get_current_user')) {
+    // 检查 WordPress 是否已安装（检查选项表）
+    if (!function_exists('is_blog_installed')) {
       return;
     }
 
-    // 检查是否有管理员用户
-    $admins = get_users(array('role' => 'administrator'));
-    if (!empty($admins)) {
-      // WordPress 已安装，自动标记部署完成
-      update_option('xiaowu_deployment_completed', current_time('mysql'));
+    // 使用 WordPress 核心函数检查是否已安装
+    if (is_blog_installed()) {
+      // WordPress 已安装，检查是否有管理员用户
+      $admins = get_users(array('role' => 'administrator', 'number' => 1));
+
+      if (!empty($admins)) {
+        // 有管理员用户，标记部署完成
+        update_option('xiaowu_deployment_completed', current_time('mysql'));
+      }
     }
   }
 
