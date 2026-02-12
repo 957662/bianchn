@@ -78,9 +78,9 @@ define('WP_REDIS_DATABASE', getenv('REDIS_DB') ?: 0);
 /**
  * 开发者专用：WordPress调试模式
  */
-define('WP_DEBUG', true);
-define('WP_DEBUG_LOG', true);
-define('WP_DEBUG_DISPLAY', true);
+define('WP_DEBUG', getenv('WP_DEBUG') === 'true');
+define('WP_DEBUG_LOG', getenv('WP_DEBUG_LOG') === 'true');
+define('WP_DEBUG_DISPLAY', getenv('WP_DEBUG_DISPLAY') === 'true');
 
 /**
  * AI服务配置
