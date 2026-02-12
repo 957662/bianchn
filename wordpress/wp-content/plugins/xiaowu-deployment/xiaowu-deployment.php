@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // 插件版本
-define('XIAOWU_DEPLOY_VERSION', '1.0.0');
+define('XIAOWU_DEPLOY_VERSION', '2.0.0');
 
 // 插件路径
 define('XIAOWU_DEPLOY_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -63,6 +63,12 @@ class Xiaowu_Deployment_Wizard_Plugin
 
     // REST API路由
     add_action('rest_api_init', array($this, 'register_rest_routes'));
+
+    // 管理菜单
+    add_action('admin_menu', array($this, 'add_admin_menu'));
+
+    // 加载管理资源
+    add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
   }
 
   /**
@@ -648,6 +654,53 @@ require_once ABSPATH . 'wp-settings.php';
     }
 
     return rest_ensure_response($result, 200);
+  }
+
+  /**
+   * 添加管理菜单
+   */
+  public function add_admin_menu()
+  {
+    add_menu_page(
+      '部署向导',
+      '部署向导',
+      'manage_options',
+      'xiaowu-deployment',
+      array($this, 'render_wizard_page'),
+      'dashicons-admin-generic',
+      3
+    );
+  }
+
+  /**
+   * 渲染向导页面
+   */
+  public function render_wizard_page()
+  {
+    require_once XIAOWU_DEPLOY_PLUGIN_DIR . 'admin/deployment-wizard.php';
+    xiaowu_deployment_wizard_page();
+  }
+
+  /**
+   * 加载管理资源
+   */
+  public function enqueue_admin_assets($hook)
+  {
+    // 只在部署向导页面加载
+    if ('toplevel_page_xiaowu-deployment' !== $hook) {
+      return;
+    }
+
+    // CSS
+    wp_enqueue_style(
+      'xiaowu-deployment-admin',
+      XIAOWU_DEPLOY_PLUGIN_URL . 'admin/css/admin.css',
+      array(),
+      XIAOWU_DEPLOY_VERSION
+    );
+
+    // JavaScript
+    wp_enqueue_script('jquery');
   }
 }
 

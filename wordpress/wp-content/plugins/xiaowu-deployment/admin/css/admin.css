@@ -1,0 +1,257 @@
+/**
+ * 部署向导管理界面样式
+ *
+ * @package Xiaowu_Deployment
+ * @since 2.0.0
+ */
+
+.xiaowu-deployment-wrap {
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.xiaowu-deployment-wrap h1 {
+    margin-bottom: 20px;
+}
+
+.xiaowu-deployment-wizard {
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 步骤指示器 */
+.wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding: 0 20px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 15px 10px;
+    background: #f0f0f0;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.step:not(:last-child):after {
+    content: '→';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.step .step-number {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 50%;
+    background: #fff;
+    margin-bottom: 8px;
+    font-weight: bold;
+    border: 2px solid #ddd;
+}
+
+.step .step-title {
+    display: block;
+    font-size: 13px;
+    color: #666;
+}
+
+.step.active {
+    background: #0073aa;
+    color: #fff;
+}
+
+.step.active .step-number {
+    background: #fff;
+    color: #0073aa;
+    border-color: #fff;
+}
+
+.step.active .step-title {
+    color: #fff;
+}
+
+.step.completed {
+    background: #46b450;
+    color: #fff;
+}
+
+.step.completed .step-number {
+    background: #fff;
+    color: #46b450;
+    border-color: #fff;
+}
+
+.step.completed .step-title {
+    color: #fff;
+}
+
+/* 步骤内容 */
+.wizard-step {
+    display: none;
+}
+
+.wizard-step.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.wizard-step h2 {
+    margin-top: 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 状态检查项 */
+.status-check {
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.status-check:before {
+    content: '';
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.status-check.success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.status-check.success:before {
+    content: '✓';
+}
+
+.status-check.error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.status-check.error:before {
+    content: '✗';
+}
+
+.status-check.warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.status-check.warning:before {
+    content: '⚠';
+}
+
+/* 表单样式 */
+.wizard-step .form-table {
+    margin-top: 20px;
+}
+
+.wizard-step .form-table th {
+    width: 150px;
+}
+
+.wizard-step .regular-text {
+    width: 300px;
+}
+
+.wizard-step .large-text {
+    width: 500px;
+}
+
+.wizard-step button {
+    margin-right: 10px;
+}
+
+/* 完成状态 */
+.xiaowu-deployment-completed {
+    text-align: center;
+    padding: 40px;
+}
+
+.xiaowu-deployment-completed h2 {
+    color: #46b450;
+    font-size: 32px;
+}
+
+.xiaowu-deployment-stats {
+    max-width: 600px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+.xiaowu-deployment-summary {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.xiaowu-deployment-summary ul {
+    list-style: none;
+    padding: 0;
+}
+
+.xiaowu-deployment-summary li {
+    padding: 8px 0;
+    font-size: 16px;
+}
+
+/* 动画 */
+.spin {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .xiaowu-deployment-wrap {
+        padding: 10px;
+    }
+
+    .wizard-steps {
+        flex-wrap: wrap;
+        padding: 0 5px;
+    }
+
+    .step {
+        min-width: 45%;
+        margin-bottom: 10px;
+    }
+
+    .step:not(:last-child):after {
+        display: none;
+    }
+
+    .wizard-step .regular-text,
+    .wizard-step .large-text {
+        width: 100%;
+    }
+}
