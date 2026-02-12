@@ -3,7 +3,7 @@
  * Plugin Name: 小伍3D图库
  * Plugin URI: https://github.com/yourusername/xiaowu-3d-gallery
  * Description: 3D图库插件，提供3D模型上传、展示、管理等功能，基于Three.js实现
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: 小伍同学
  * Author URI: https://xiaowu.blog
  * License: GPL v2 or later

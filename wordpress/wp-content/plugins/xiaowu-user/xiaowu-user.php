@@ -3,7 +3,7 @@
  * Plugin Name: 小伍用户管理
  * Plugin URI: https://github.com/yourusername/xiaowu-user
  * Description: 用户管理插件，提供用户资料、社交登录、用户等级、私信系统、关注/粉丝功能
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: 小伍同学
  * Author URI: https://xiaowu.blog
  * License: GPL v2 or later

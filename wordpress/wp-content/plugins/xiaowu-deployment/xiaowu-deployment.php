@@ -3,7 +3,7 @@
  * Plugin Name: 小伍部署向导
  * Plugin URI: https://github.com/957662/bianchn
  * Description: 部署配置向导，提供Web界面配置系统环境变量
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: 小伍同学
  * Author URI: https://xiaowu.blog
  * License: GPL v2 or later

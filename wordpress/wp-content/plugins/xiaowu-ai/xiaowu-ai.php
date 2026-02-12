@@ -3,7 +3,7 @@
  * Plugin Name: 小伍AI服务
  * Plugin URI: https://github.com/yourusername/xiaowu-ai
  * Description: AI服务插件，提供文章优化、智能搜索、内容推荐、代码生成、联网搜索等功能
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: 小伍同学
  * Author URI: https://xiaowu.blog
  * License: GPL v2 or later

@@ -3,7 +3,7 @@
  * Plugin Name: 小伍评论系统
  * Plugin URI: https://github.com/yourusername/xiaowu-comments
  * Description: 增强的WordPress评论系统,支持邮件通知、AI反垃圾、表情包、@提及等功能
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: 小伍同学
  * Author URI: https://xiaowu.blog
  * License: GPL v2 or later

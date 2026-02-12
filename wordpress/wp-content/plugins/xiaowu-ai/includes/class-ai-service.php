@@ -2,12 +2,18 @@
 /**
  * AI服务核心类
  *
+ * 重构版本 v2.0.0 - 使用提供商模式，移除硬编码端点
+ *
  * @package Xiaowu_AI
+ * @since 2.0.0
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// 引入配置管理器
+require_once XIAOWU_AI_PLUGIN_DIR . 'includes/class-ai-config-manager.php';
 
 /**
  * Xiaowu_AI_Service 类
@@ -15,14 +21,19 @@ if (!defined('ABSPATH')) {
 class Xiaowu_AI_Service
 {
     /**
-     * AI提供商
+     * 配置管理器
+     */
+    private $config_manager;
+
+    /**
+     * 当前提供商
      */
     private $provider;
 
     /**
-     * API密钥
+     * 提供商实例
      */
-    private $api_key;
+    private $provider_instance;
 
     /**
      * 模型名称
@@ -42,13 +53,51 @@ class Xiaowu_AI_Service
     /**
      * 构造函数
      */
-    public function __construct()
+    public function __construct($provider = null)
     {
-        $this->provider = defined('XIAOWU_AI_PROVIDER') ? XIAOWU_AI_PROVIDER : get_option('xiaowu_ai_provider', 'openai');
-        $this->api_key = defined('XIAOWU_AI_API_KEY') ? XIAOWU_AI_API_KEY : get_option('xiaowu_ai_api_key');
+        $this->config_manager = new Xiaowu_AI_Config_Manager();
+        $this->provider = $provider ?: $this->config_manager->get_default_provider();
+        $this->init_provider();
+
         $this->model = defined('XIAOWU_AI_MODEL') ? XIAOWU_AI_MODEL : get_option('xiaowu_ai_model', 'gpt-4');
         $this->max_tokens = defined('XIAOWU_AI_MAX_TOKENS') ? XIAOWU_AI_MAX_TOKENS : get_option('xiaowu_ai_max_tokens', 4000);
         $this->temperature = defined('XIAOWU_AI_TEMPERATURE') ? XIAOWU_AI_TEMPERATURE : get_option('xiaowu_ai_temperature', 0.7);
+    }
+
+    /**
+     * 初始化提供商实例
+     */
+    private function init_provider()
+    {
+        $config = $this->config_manager->get_provider_config($this->provider);
+
+        $provider_class_map = array(
+            'openai' => 'Xiaowu_AI_Provider_Openai',
+            'anthropic' => 'Xiaowu_AI_Provider_Anthropic',
+            'qianwen' => 'Xiaowu_AI_Provider_Qianwen',
+            'wenxin' => 'Xiaowu_AI_Provider_Wenxin',
+            'zhipu' => 'Xiaowu_AI_Provider_Zhipu',
+            'custom' => 'Xiaowu_AI_Provider_Custom'
+        );
+
+        $class_name = $provider_class_map[$this->provider] ?? null;
+
+        if ($class_name) {
+            $provider_file = XIAOWU_AI_PLUGIN_DIR . 'includes/providers/class-' . $this->provider . '-provider.php';
+
+            if (file_exists($provider_file)) {
+                require_once $provider_file;
+                $this->provider_instance = new $class_name($config);
+            } else {
+                // 如果特定提供商文件不存在，使用自定义提供商
+                require_once XIAOWU_AI_PLUGIN_DIR . 'includes/providers/class-custom-provider.php';
+                $this->provider_instance = new Xiaowu_AI_Provider_Custom($config);
+            }
+        } else {
+            // 使用自定义提供商作为后备
+            require_once XIAOWU_AI_PLUGIN_DIR . 'includes/providers/class-custom-provider.php';
+            $this->provider_instance = new Xiaowu_AI_Provider_Custom($config);
+        }
     }
 
     /**
@@ -56,6 +105,13 @@ class Xiaowu_AI_Service
      */
     public function request($prompt, $system_prompt = '', $options = array())
     {
+        if (!$this->provider_instance) {
+            return array(
+                'success' => false,
+                'error' => 'AI提供商未初始化'
+            );
+        }
+
         $default_options = array(
             'temperature' => $this->temperature,
             'max_tokens' => $this->max_tokens,
@@ -64,259 +120,30 @@ class Xiaowu_AI_Service
 
         $options = wp_parse_args($options, $default_options);
 
-        switch ($this->provider) {
-            case 'openai':
-                return $this->request_openai($prompt, $system_prompt, $options);
-            case 'qianwen':
-                return $this->request_qianwen($prompt, $system_prompt, $options);
-            case 'claude':
-                return $this->request_claude($prompt, $system_prompt, $options);
-            default:
-                return array(
-                    'success' => false,
-                    'error' => '不支持的AI提供商'
-                );
-        }
-    }
-
-    /**
-     * OpenAI API请求
-     */
-    private function request_openai($prompt, $system_prompt, $options)
-    {
-        $messages = array();
-
-        if (!empty($system_prompt)) {
-            $messages[] = array(
-                'role' => 'system',
-                'content' => $system_prompt
-            );
-        }
-
-        $messages[] = array(
-            'role' => 'user',
-            'content' => $prompt
-        );
-
-        $body = array(
-            'model' => $options['model'],
-            'messages' => $messages,
-            'temperature' => floatval($options['temperature']),
-            'max_tokens' => intval($options['max_tokens'])
-        );
-
-        $response = wp_remote_post('https://api.openai.com/v1/chat/completions', array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $this->api_key,
-                'Content-Type' => 'application/json'
-            ),
-            'body' => json_encode($body),
-            'timeout' => 60
-        ));
-
-        if (is_wp_error($response)) {
-            return array(
-                'success' => false,
-                'error' => $response->get_error_message()
-            );
-        }
-
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (isset($body['error'])) {
-            return array(
-                'success' => false,
-                'error' => $body['error']['message']
-            );
-        }
-
-        return array(
-            'success' => true,
-            'content' => $body['choices'][0]['message']['content'],
-            'usage' => $body['usage']
-        );
-    }
-
-    /**
-     * 通义千问API请求
-     */
-    private function request_qianwen($prompt, $system_prompt, $options)
-    {
-        $messages = array();
-
-        if (!empty($system_prompt)) {
-            $messages[] = array(
-                'role' => 'system',
-                'content' => $system_prompt
-            );
-        }
-
-        $messages[] = array(
-            'role' => 'user',
-            'content' => $prompt
-        );
-
-        $body = array(
-            'model' => $options['model'],
-            'input' => array(
-                'messages' => $messages
-            ),
-            'parameters' => array(
-                'temperature' => floatval($options['temperature']),
-                'max_tokens' => intval($options['max_tokens'])
-            )
-        );
-
-        $response = wp_remote_post('https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation', array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $this->api_key,
-                'Content-Type' => 'application/json'
-            ),
-            'body' => json_encode($body),
-            'timeout' => 60
-        ));
-
-        if (is_wp_error($response)) {
-            return array(
-                'success' => false,
-                'error' => $response->get_error_message()
-            );
-        }
-
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (isset($body['code']) && $body['code'] !== '200') {
-            return array(
-                'success' => false,
-                'error' => $body['message']
-            );
-        }
-
-        return array(
-            'success' => true,
-            'content' => $body['output']['text'],
-            'usage' => $body['usage']
-        );
-    }
-
-    /**
-     * Claude API请求
-     */
-    private function request_claude($prompt, $system_prompt, $options)
-    {
-        $body = array(
-            'model' => $options['model'],
-            'max_tokens' => intval($options['max_tokens']),
-            'temperature' => floatval($options['temperature']),
-            'messages' => array(
-                array(
-                    'role' => 'user',
-                    'content' => $prompt
-                )
-            )
-        );
-
-        if (!empty($system_prompt)) {
-            $body['system'] = $system_prompt;
-        }
-
-        $response = wp_remote_post('https://api.anthropic.com/v1/messages', array(
-            'headers' => array(
-                'x-api-key' => $this->api_key,
-                'Content-Type' => 'application/json',
-                'anthropic-version' => '2023-06-01'
-            ),
-            'body' => json_encode($body),
-            'timeout' => 60
-        ));
-
-        if (is_wp_error($response)) {
-            return array(
-                'success' => false,
-                'error' => $response->get_error_message()
-            );
-        }
-
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (isset($body['error'])) {
-            return array(
-                'success' => false,
-                'error' => $body['error']['message']
-            );
-        }
-
-        return array(
-            'success' => true,
-            'content' => $body['content'][0]['text'],
-            'usage' => $body['usage']
-        );
+        return $this->provider_instance->request_text($prompt, $system_prompt, $options);
     }
 
     /**
      * 生成图像
      */
-    public function generate_image($prompt, $style = 'icon', $size = '512x512', $format = 'png', $num_images = 1)
+    public function generate_image($prompt, $options = array())
     {
-        $provider = defined('XIAOWU_IMG_GEN_PROVIDER') ? XIAOWU_IMG_GEN_PROVIDER : 'dall-e';
-        $api_key = defined('XIAOWU_IMG_GEN_API_KEY') ? XIAOWU_IMG_GEN_API_KEY : get_option('xiaowu_img_gen_api_key');
-
-        if ($provider === 'dall-e') {
-            return $this->generate_image_dalle($prompt, $size, $num_images, $api_key);
-        }
-
-        return array(
-            'success' => false,
-            'error' => '不支持的图像生成提供商'
-        );
-    }
-
-    /**
-     * DALL-E图像生成
-     */
-    private function generate_image_dalle($prompt, $size, $num_images, $api_key)
-    {
-        $body = array(
-            'prompt' => $prompt,
-            'n' => intval($num_images),
-            'size' => $size,
-            'response_format' => 'url'
-        );
-
-        $response = wp_remote_post('https://api.openai.com/v1/images/generations', array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $api_key,
-                'Content-Type' => 'application/json'
-            ),
-            'body' => json_encode($body),
-            'timeout' => 60
-        ));
-
-        if (is_wp_error($response)) {
+        if (!$this->provider_instance) {
             return array(
                 'success' => false,
-                'error' => $response->get_error_message()
+                'error' => 'AI提供商未初始化'
             );
         }
 
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (isset($body['error'])) {
-            return array(
-                'success' => false,
-                'error' => $body['error']['message']
-            );
-        }
-
-        $images = array();
-        foreach ($body['data'] as $image) {
-            $images[] = $image['url'];
-        }
-
-        return array(
-            'success' => true,
-            'images' => $images
+        $default_options = array(
+            'size' => '1024x1024',
+            'n' => 1,
+            'model' => 'dall-e-3'
         );
+
+        $options = wp_parse_args($options, $default_options);
+
+        return $this->provider_instance->generate_image($prompt, $options);
     }
 
     /**
@@ -324,56 +151,59 @@ class Xiaowu_AI_Service
      */
     public function generate_embedding($text)
     {
-        if ($this->provider === 'openai') {
-            return $this->generate_embedding_openai($text);
+        if (!$this->provider_instance) {
+            return array(
+                'success' => false,
+                'error' => 'AI提供商未初始化'
+            );
         }
 
-        return array(
-            'success' => false,
-            'error' => '不支持的嵌入向量提供商'
-        );
+        return $this->provider_instance->generate_embedding($text);
     }
 
     /**
-     * OpenAI嵌入向量生成
+     * 切换提供商
      */
-    private function generate_embedding_openai($text)
+    public function switch_provider($new_provider)
     {
-        $body = array(
-            'input' => $text,
-            'model' => 'text-embedding-ada-002'
-        );
+        if ($this->config_manager->is_provider_available($new_provider)) {
+            $this->provider = $new_provider;
+            $this->init_provider();
+            return true;
+        }
 
-        $response = wp_remote_post('https://api.openai.com/v1/embeddings', array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $this->api_key,
-                'Content-Type' => 'application/json'
-            ),
-            'body' => json_encode($body),
-            'timeout' => 30
-        ));
+        return false;
+    }
 
-        if (is_wp_error($response)) {
+    /**
+     * 获取当前提供商
+     */
+    public function get_provider()
+    {
+        return $this->provider;
+    }
+
+    /**
+     * 获取配置管理器
+     */
+    public function get_config_manager()
+    {
+        return $this->config_manager;
+    }
+
+    /**
+     * 测试连接
+     */
+    public function test_connection()
+    {
+        if (!$this->provider_instance) {
             return array(
                 'success' => false,
-                'error' => $response->get_error_message()
+                'message' => 'AI提供商未初始化'
             );
         }
 
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (isset($body['error'])) {
-            return array(
-                'success' => false,
-                'error' => $body['error']['message']
-            );
-        }
-
-        return array(
-            'success' => true,
-            'embedding' => $body['data'][0]['embedding'],
-            'usage' => $body['usage']
-        );
+        return $this->provider_instance->test_connection();
     }
 
     /**
@@ -395,11 +225,20 @@ class Xiaowu_AI_Service
                 'tokens_used' => $tokens_used,
                 'cost' => $cost,
                 'user_id' => get_current_user_id(),
+                'provider' => $this->provider,
                 'completed_at' => current_time('mysql')
             ),
-            array('%s', '%s', '%s', '%s', '%s', '%d', '%f', '%d', '%s')
+            array('%s', '%s', '%s', '%s', '%s', '%d', '%f', '%d', '%s', '%s')
         );
 
         return $wpdb->insert_id;
+    }
+
+    /**
+     * 获取所有可用提供商
+     */
+    public function get_available_providers()
+    {
+        return $this->config_manager->get_available_providers();
     }
 }

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: xiaowu-base
  * Description: 小伍博客基础服务插件 - 提供速率限制、安全认证等基础功能
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: xiaowu
  * License: GPL v2 or later
  * Text Domain: xiaowu-base

@@ -3,7 +3,7 @@
  * Plugin Name: 小伍智能搜索
  * Plugin URI: https://xiaowu.com/plugins/xiaowu-search
  * Description: 为小伍博客提供智能搜索功能，支持全文搜索、AI增强搜索、搜索建议等
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: 小伍同学
  * Author URI: https://xiaowu.com
  * License: GPL v2 or later
