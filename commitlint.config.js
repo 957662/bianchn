@@ -169,7 +169,8 @@ module.exports = {
         maxLength: 100
       },
       confirmCommit: {
-        description: '确认提交?'
+        description: '确认提交?',
+        enabled: false  // 禁用确认提示
       }
     }
   }
